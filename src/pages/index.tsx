@@ -21,6 +21,7 @@ const Home: NextPage = () => {
       </Head>
       <Header />
       <main className="flex min-h-screen flex-col items-center justify-center bg-white"></main>
+      <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
     </>
   );
 };
