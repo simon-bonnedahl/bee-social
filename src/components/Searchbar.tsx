@@ -31,13 +31,13 @@ function Searchbar() {
           <input
             type="search"
             id="default-search"
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-orange-400 focus:ring-orange-400 dark:border-gray-400 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-orange-400 dark:focus:ring-orange-400"
             placeholder="Search for a user, post, or hashtag"
             required
           />
           <button
             type="submit"
-            className="absolute right-2.5 bottom-2.5 rounded-lg bg-orange-400 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="absolute right-2.5 bottom-2.5 rounded-lg bg-orange-400 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-500"
           >
             Search
           </button>

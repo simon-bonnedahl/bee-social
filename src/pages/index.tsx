@@ -20,8 +20,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-center bg-white"></main>
-      <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+      <main className="flex min-h-screen flex-col items-center justify-center bg-slate-100 dark:bg-slate-700"></main>
     </>
   );
 };
