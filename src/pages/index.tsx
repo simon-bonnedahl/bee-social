@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-center bg-orange-100"></main>
+      <main className="flex min-h-screen flex-col items-center justify-center bg-white"></main>
     </>
   );
 };

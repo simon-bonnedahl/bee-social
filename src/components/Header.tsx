@@ -1,4 +1,10 @@
-import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import {
+  SignIn,
+  SignInButton,
+  SignOutButton,
+  UserButton,
+  useUser,
+} from "@clerk/nextjs";
 import Image from "next/image";
 import React from "react";
 import logo from "../../public/bee-social-logo.png";
@@ -6,22 +12,30 @@ import logo from "../../public/bee-social-logo.png";
 function Header() {
   const { user, isSignedIn } = useUser();
   return (
-    <header className="sticky top-0 z-50 flex justify-between bg-orange-300 p-5 shadow-md">
+    <header className="bg-white-300 sticky top-0 z-50 flex items-center justify-between px-3 shadow-md">
+      <div className="flex items-center">
+        <div className="text-xl font-bold">
+          <span className="text-orange-400">Bee </span>
+          <span className="text-black">Social</span>
+        </div>
+        <Image src={logo} alt="Logo" width={100} height={100} />
+      </div>
       <div>
         {isSignedIn ? (
-          <>
-            <h1 className="text-xl font-bold text-black">
-              Hello {user.firstName}
-            </h1>
+          <UserButton
+            userProfileUrl="/profile"
+            appearance={{
+              elements: {
+                userButtonAvatarBox: "h-16 w-16",
 
-            <SignOutButton />
-          </>
+                userButtonPopoverFooter: "hidden",
+              },
+            }}
+          />
         ) : (
           <SignInButton />
         )}
       </div>
-
-      <Image src={logo} alt="Logo" width={100} height={100} />
     </header>
   );
 }
