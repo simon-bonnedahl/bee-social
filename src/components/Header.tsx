@@ -6,27 +6,29 @@ import {
   useUser,
 } from "@clerk/nextjs";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import logo from "../../public/bee-social-logo.png";
 
 function Header() {
   const { user, isSignedIn } = useUser();
   return (
-    <header className="bg-white-300 sticky top-0 z-50 flex items-center justify-between px-3 shadow-md">
-      <div className="flex items-center">
+    <header className="bg-white-300 sticky top-0 z-50 flex items-center justify-between p-4 shadow-md">
+      <Link href="/" className="flex items-center">
+        <Image src={logo} alt="Logo" width={50} height={50} />
         <div className="text-xl font-bold">
-          <span className="text-orange-400">Bee </span>
-          <span className="text-black">Social</span>
+          <span className="text-black">Bee </span>
+          <span className="text-orange-400">Social</span>
         </div>
-        <Image src={logo} alt="Logo" width={100} height={100} />
-      </div>
+      </Link>
       <div>
         {isSignedIn ? (
           <UserButton
             userProfileUrl="/profile"
+            userProfileMode="navigation"
             appearance={{
               elements: {
-                userButtonAvatarBox: "h-16 w-16",
+                userButtonAvatarBox: "h-12 w-12",
 
                 userButtonPopoverFooter: "hidden",
               },
