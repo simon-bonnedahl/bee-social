@@ -16,7 +16,7 @@ import CreatePost from "./CreatePost";
 function Header() {
   const { user, isSignedIn } = useUser();
   return (
-    <header className="bg-white-300 sticky top-0 z-50 flex items-center justify-between p-4 shadow-md dark:bg-gray-700">
+    <header className="sticky top-0 z-50 flex items-center justify-between bg-white p-4 shadow-md dark:bg-gray-700">
       <Link href="/" className="flex items-center">
         <Image src={logo} alt="Logo" width={50} height={50} />
         <div className="text-xl font-bold">
