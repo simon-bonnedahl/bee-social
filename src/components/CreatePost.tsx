@@ -1,28 +1,30 @@
-import { Button, Modal } from "flowbite-react";
-import React, { useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { Button, Modal, Pagination } from "flowbite-react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { FileUploader } from "react-drag-drop-files";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 
 function CreatePost() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
-
-  const handleContentChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setContent(event.target.value);
-  };
+  const [preview, setPreview] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [page, setPage] = useState(1);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     setImage(event.target.files[0]!);
   };
 
+  const onPost = () => {
+    // Send the post data to the server or perform any other necessary action
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Send the post data to the server or perform any other necessary action
   };
-
-  const [visible, setVisible] = useState(false);
 
   return (
     <React.Fragment>
@@ -31,36 +33,132 @@ function CreatePost() {
         className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
       >
         <div className="flex items-center gap-2">
-          Create Post
+          Post
           <AiOutlinePlusCircle className="h-6 w-6" />
         </div>
       </Button>
       <Modal show={visible} onClose={() => setVisible(false)}>
-        <Modal.Header>Terms of Service</Modal.Header>
+        <Modal.Header>Create new post</Modal.Header>
         <Modal.Body>
-          <div className="space-y-6">
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              With less than a month to go before the European Union enacts new
-              consumer privacy laws for its citizens, companies around the world
-              are updating their terms of service agreements to comply.
-            </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              The European Union’s General Data Protection Regulation (G.D.P.R.)
-              goes into effect on May 25 and is meant to ensure a common set of
-              data rights in the European Union. It requires organizations to
-              notify users as soon as possible of high-risk data breaches that
-              could personally affect them.
-            </p>
-          </div>
+          {page === 1 && (
+            <DragAndDropImage preview={preview} setPreview={setPreview} />
+          )}
+          {page === 2 && (
+            <div className="flex">
+              {preview && <img src={preview} />}
+
+              <WriteContent content={content} setContent={setContent} />
+            </div>
+          )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => setVisible(true)}>I accept</Button>
-          <Button color="gray" onClick={() => setVisible(true)}>
-            Decline
-          </Button>
+        <Modal.Footer className="flex justify-between">
+          <Pagination
+            currentPage={page}
+            layout="navigation"
+            totalPages={2}
+            onPageChange={(page) => setPage(page)}
+          />
+          {page === 2 && content && (
+            <Button
+              className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
+              onClick={onPost}
+            >
+              Share
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </React.Fragment>
+  );
+}
+
+type DragAndDropImageProps = {
+  preview: string | null;
+  setPreview: (preview: string | null) => void;
+};
+
+function DragAndDropImage(props: DragAndDropImageProps) {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleChange = (file: File) => {
+    console.log("File dropped");
+
+    setSelectedFile(file);
+  };
+
+  useEffect(() => {
+    if (props.preview) return;
+    if (!selectedFile) {
+      props.setPreview(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile as Blob);
+    props.setPreview(objectUrl);
+  }, [selectedFile]);
+
+  const fileTypes = ["JPG", "PNG"];
+
+  return (
+    <>
+      {props.preview && (
+        <div>
+          <img src={props.preview} alt="preview" />
+          <button></button>
+        </div>
+      )}
+      {!props.preview && (
+        <FileUploader
+          handleChange={handleChange}
+          name="file"
+          types={fileTypes}
+        />
+      )}
+    </>
+  );
+}
+
+type WriteContentProps = {
+  content: string;
+  setContent: (content: string) => void;
+};
+function WriteContent(props: WriteContentProps) {
+  const [content, setContent] = useState(props.content);
+
+  const { user } = useUser();
+  return (
+    <div className="flex w-full flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <Image
+          src={user?.profileImageUrl || ""}
+          alt="profile picture"
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold dark:text-white">
+            {user?.username}
+          </span>
+        </div>
+      </div>
+
+      <form className="w-full">
+        <textarea
+          id="message"
+          rows={6}
+          className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-orange-500 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-orange-500 dark:focus:ring-orange-500"
+          placeholder="What do you want to share?"
+          value={content}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              props.setContent(content);
+            }
+          }}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      </form>
+    </div>
   );
 }
 
