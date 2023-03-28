@@ -11,6 +11,7 @@ import React from "react";
 import logo from "../../public/bee-social-logo.png";
 import Searchbar from "./Searchbar";
 import ThemeSwitch from "./ThemeSwitch";
+import CreatePost from "./CreatePost";
 
 function Header() {
   const { user, isSignedIn } = useUser();
@@ -24,7 +25,8 @@ function Header() {
         </div>
       </Link>
       <Searchbar />
-      <div className="flex gap-x-4">
+      <div className="flex items-center gap-x-4">
+        {isSignedIn && <CreatePost />}
         {isSignedIn ? (
           <UserButton
             userProfileUrl="/profile"

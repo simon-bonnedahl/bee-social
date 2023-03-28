@@ -7,6 +7,8 @@ import {
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import CreatePost from "~/components/CreatePost";
+import Feed from "~/components/Feed";
 import Header from "~/components/Header";
 
 import { api } from "~/utils/api";
@@ -20,7 +22,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-center bg-slate-100 dark:bg-slate-700"></main>
+      <main className="flex min-h-screen flex-col items-center justify-center bg-slate-100 dark:bg-slate-700">
+        <Feed />
+      </main>
     </>
   );
 };

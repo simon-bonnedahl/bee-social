@@ -10,7 +10,7 @@ function Searchbar() {
         >
           Search
         </label>
-        <div className="relative w-96">
+        <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <svg
               aria-hidden="true"
@@ -32,15 +32,9 @@ function Searchbar() {
             type="search"
             id="default-search"
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-orange-400 focus:ring-orange-400 dark:border-gray-400 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-orange-400 dark:focus:ring-orange-400"
-            placeholder="Search for a user, post, or hashtag"
+            placeholder="Search for a user or hashtag"
             required
           />
-          <button
-            type="submit"
-            className="absolute right-2.5 bottom-2.5 rounded-lg bg-orange-400 px-4 py-2 text-sm font-medium text-white hover:bg-orange-500 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-orange-400 dark:hover:bg-orange-500 dark:focus:ring-orange-500"
-          >
-            Search
-          </button>
         </div>
       </form>
     </div>
