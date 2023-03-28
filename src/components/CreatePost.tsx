@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { api } from "~/utils/api";
 
 function CreatePost() {
   const [content, setContent] = useState("");
@@ -12,6 +13,8 @@ function CreatePost() {
   const [visible, setVisible] = useState(false);
   const [page, setPage] = useState(1);
 
+  const { mutate } = api.post.create.useMutation();
+
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     setImage(event.target.files[0]!);
@@ -19,6 +22,7 @@ function CreatePost() {
 
   const onPost = () => {
     // Send the post data to the server or perform any other necessary action
+    mutate({ content: content, imageUrl: preview ?? "" });
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

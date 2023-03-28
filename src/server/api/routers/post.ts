@@ -7,8 +7,8 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
-  publicProcedure,
   privateProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 
 const ratelimit = new Ratelimit({
@@ -68,8 +68,9 @@ export const postRouter = createTRPCRouter({
         createdAt: "desc",
       },
     });
-
-    return addUserDataToPosts(posts);
+    const res = await addUserDataToPosts(posts);
+    console.log("res", res);
+    return res;
   }),
 
   getById: publicProcedure
