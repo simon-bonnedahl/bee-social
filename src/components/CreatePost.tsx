@@ -1,13 +1,11 @@
 import { useUser } from "@clerk/nextjs";
 import { Button, Modal, Pagination } from "flowbite-react";
 import Image from "next/image";
-import { decode, encode } from "punycode";
 import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { api } from "~/utils/api";
 import Resizer from "react-image-file-resizer";
-import { resolve } from "path";
 
 function CreatePost() {
   const [content, setContent] = useState("");
@@ -15,6 +13,7 @@ function CreatePost() {
   const [preview, setPreview] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState("xl");
 
   const { mutate } = api.post.create.useMutation();
 
@@ -26,18 +25,25 @@ function CreatePost() {
     // Send the post data to the server or perform any other necessary action
   };
 
+  const onPageChange = (page: number) => {
+    setPage(page);
+    if (page === 2) {
+      setSize("4xl");
+    }
+    if (page === 1) {
+      setSize("xl");
+    }
+  };
+
   return (
     <React.Fragment>
       <Button
         onClick={() => setVisible(true)}
-        className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
+        className="bg-orange-400 p-0 px-0 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
       >
-        <div className="flex items-center gap-2">
-          Post
-          <AiOutlinePlusCircle className="h-6 w-6" />
-        </div>
+        Post
       </Button>
-      <Modal show={visible} onClose={() => setVisible(false)}>
+      <Modal show={visible} onClose={() => setVisible(false)} size={size}>
         <Modal.Header>Create new post</Modal.Header>
         <Modal.Body>
           {page === 1 && (
@@ -48,7 +54,7 @@ function CreatePost() {
             />
           )}
           {page === 2 && (
-            <div className="flex">
+            <div className="flex gap-4">
               {preview && <img src={preview} />}
 
               <WriteContent content={content} setContent={setContent} />
@@ -60,7 +66,7 @@ function CreatePost() {
             currentPage={page}
             layout="navigation"
             totalPages={2}
-            onPageChange={(page) => setPage(page)}
+            onPageChange={(page) => onPageChange(page)}
           />
           {page === 2 && content && (
             <Button
@@ -83,14 +89,10 @@ type DragAndDropImageProps = {
 };
 
 function DragAndDropImage(props: DragAndDropImageProps) {
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null); //remove
 
   const handleChange = async (file: File) => {
-    console.log("File dropped");
-    //resize image
-    console.log(file);
     const resizedFile = await resizeFile(file);
-    console.log(resizedFile);
     setSelectedFile(resizedFile as string);
   };
 
@@ -101,7 +103,7 @@ function DragAndDropImage(props: DragAndDropImageProps) {
       return;
     }
     props.setImageFile(selectedFile);
-    props.setPreview(selectedFile);
+    props.setPreview(selectedFile); //remove preview
   }, [selectedFile]);
 
   const fileTypes = ["JPG", "PNG"];
@@ -109,9 +111,9 @@ function DragAndDropImage(props: DragAndDropImageProps) {
   return (
     <>
       {props.preview && (
-        <div>
+        <div className="flex flex-col items-center gap-2">
           <img src={props.preview} alt="preview" />
-          <button></button>
+          <button onClick={() => props.setPreview(null)}>Remove</button>
         </div>
       )}
       {!props.preview && (
@@ -119,6 +121,13 @@ function DragAndDropImage(props: DragAndDropImageProps) {
           handleChange={handleChange}
           name="file"
           types={fileTypes}
+          minSize={0.1}
+          children={
+            <div className="flex h-64 flex-col items-center justify-center gap-2">
+              <AiOutlinePlusCircle size={80} />
+              <span className="text-lg">Drag and drop or click to upload</span>
+            </div>
+          }
         />
       )}
     </>
@@ -145,7 +154,7 @@ function WriteContent(props: WriteContentProps) {
         />
         <div className="flex flex-col">
           <span className="text-sm font-semibold dark:text-white">
-            {user?.username}
+            @{user?.username}
           </span>
         </div>
       </div>

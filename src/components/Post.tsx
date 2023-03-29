@@ -15,7 +15,7 @@ function Post(props: PostProps) {
           className="h-12 w-12 rounded-full"
         />
         <div className="flex flex-col">
-          <span className="text-sm text-gray-400">@{author.username}</span>
+          <span className="text-sm font-semibold">@{author.username}</span>
         </div>
       </div>
       <div className="mt-4">
