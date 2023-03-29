@@ -1,11 +1,12 @@
 import { useUser } from "@clerk/nextjs";
-import { Button, Modal, Pagination } from "flowbite-react";
+import { Button, Modal, Pagination, Spinner } from "flowbite-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { api } from "~/utils/api";
 import Resizer from "react-image-file-resizer";
+import { toast } from "react-hot-toast";
 
 function CreatePost() {
   const [content, setContent] = useState("");
@@ -15,7 +16,23 @@ function CreatePost() {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState("xl");
 
-  const { mutate } = api.post.create.useMutation();
+  const ctx = api.useContext();
+  const { mutate, isLoading: isPosting } = api.post.create.useMutation({
+    onSuccess: () => {
+      setVisible(false);
+      setContent("");
+      setPreview(null);
+      setImageFile(null);
+      setPage(1);
+      setSize("xl");
+      toast.success("Post created");
+      void ctx.post.getAll.invalidate();
+    },
+    onError: (e) => {
+      console.log(e);
+      toast.error("Something went wrong");
+    },
+  });
 
   const onPost = async () => {
     if (!imageFile) return;
@@ -73,7 +90,7 @@ function CreatePost() {
               className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
               onClick={onPost}
             >
-              Share
+              {isPosting ? <Spinner color="warning" /> : "Post"}
             </Button>
           )}
         </Modal.Footer>
