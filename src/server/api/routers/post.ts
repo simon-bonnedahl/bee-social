@@ -1,8 +1,16 @@
+import {
+  ContainerSASPermissions,
+  generateBlobSASQueryParameters,
+  StorageSharedKeyCredential,
+} from "@azure/storage-blob";
 import clerkClient, { User } from "@clerk/clerk-sdk-node";
 import { Post } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import axios from "axios";
+import { randomUUID } from "crypto";
+import { decode } from "punycode";
 import { z } from "zod";
 
 import {
@@ -10,6 +18,8 @@ import {
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+
+const { BlobServiceClient } = require("@azure/storage-blob");
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -51,7 +61,15 @@ const addUserDataToPosts = async (posts: Post[]) => {
       });
     }
     return {
-      post,
+      post: {
+        ...post,
+        imageUrl:
+          "https://beesocialstorage.blob.core.windows.net/images/" +
+          post.imageId +
+          ".png" +
+          "?" +
+          sasToken,
+      },
       author: {
         ...author,
         username: author.username ?? "(username not found)",
@@ -69,7 +87,6 @@ export const postRouter = createTRPCRouter({
       },
     });
     const res = await addUserDataToPosts(posts);
-    console.log("res", res);
     return res;
   }),
 
@@ -107,7 +124,7 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         content: z.string().min(1).max(280),
-        imageUrl: z.string().optional(),
+        image: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -115,15 +132,75 @@ export const postRouter = createTRPCRouter({
 
       const { success } = await ratelimit.limit(authorId);
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      if (input.image) {
+        const imageId = await uploadImage(input.image);
 
-      const post = await ctx.prisma.post.create({
-        data: {
-          authorId,
-          content: input.content,
-          imageUrl: input.imageUrl,
-        },
-      });
+        const post = await ctx.prisma.post.create({
+          data: {
+            authorId,
+            content: input.content,
+            imageId: imageId,
+          },
+        });
 
-      return post;
+        return post;
+      }
     }),
 });
+
+const uploadImage = async (file: string) => {
+  const blobServiceClient = BlobServiceClient.fromConnectionString(
+    process.env.AZURE_STORAGE_CONNECTION_STRING
+  );
+
+  const containerClient = blobServiceClient.getContainerClient("images");
+
+  //take file to from base64 to buffer
+  const buffer = Buffer.from(
+    file.replace(/^data:image\/[a-z]+;base64,/, ""),
+    "base64"
+  );
+
+  const id = randomUUID();
+  const blobName = `${id}.png`;
+  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+  const response = await blockBlobClient.uploadData(buffer);
+  console.log("image uploaded");
+
+  return id;
+};
+
+const sasToken = generateSasToken(
+  process.env.AZURE_STORAGE_ACCOUNT_NAME,
+  process.env.AZURE_STORAGE_ACCOUNT_KEY,
+  "images"
+);
+
+function generateSasToken(
+  accountName: any,
+  accountKey: any,
+  containerName: any
+) {
+  // Create the SAS token
+  const startDate = new Date();
+  const expiryDate = new Date(startDate);
+  expiryDate.setMinutes(startDate.getMinutes() + 100);
+  startDate.setMinutes(startDate.getMinutes() - 100);
+
+  const sharedKeyCredential = new StorageSharedKeyCredential(
+    accountName,
+    accountKey
+  );
+  const permissions = ContainerSASPermissions.parse("r");
+  const sas = generateBlobSASQueryParameters(
+    {
+      containerName: containerName,
+      permissions: permissions,
+      startsOn: startDate,
+      expiresOn: expiryDate,
+    },
+    sharedKeyCredential
+  ).toString();
+
+  return sas;
+}

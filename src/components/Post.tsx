@@ -5,6 +5,7 @@ type PostProps = RouterOutputs["post"]["getAll"][number];
 
 function Post(props: PostProps) {
   const { post, author } = props;
+  console.log(post.imageUrl);
   return (
     <div>
       <div className="flex items-center gap-x-4">

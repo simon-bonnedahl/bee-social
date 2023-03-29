@@ -1,32 +1,28 @@
 import { useUser } from "@clerk/nextjs";
 import { Button, Modal, Pagination } from "flowbite-react";
 import Image from "next/image";
+import { decode, encode } from "punycode";
 import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { api } from "~/utils/api";
+import Resizer from "react-image-file-resizer";
+import { resolve } from "path";
 
 function CreatePost() {
   const [content, setContent] = useState("");
-  const [image, setImage] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const [page, setPage] = useState(1);
 
   const { mutate } = api.post.create.useMutation();
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files) return;
-    setImage(event.target.files[0]!);
-  };
+  const onPost = async () => {
+    if (!imageFile) return;
 
-  const onPost = () => {
-    // Send the post data to the server or perform any other necessary action
-    mutate({ content: content, imageUrl: preview ?? "" });
-  };
+    mutate({ content: content, image: imageFile });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
     // Send the post data to the server or perform any other necessary action
   };
 
@@ -45,7 +41,11 @@ function CreatePost() {
         <Modal.Header>Create new post</Modal.Header>
         <Modal.Body>
           {page === 1 && (
-            <DragAndDropImage preview={preview} setPreview={setPreview} />
+            <DragAndDropImage
+              preview={preview}
+              setPreview={setPreview}
+              setImageFile={setImageFile}
+            />
           )}
           {page === 2 && (
             <div className="flex">
@@ -79,15 +79,19 @@ function CreatePost() {
 type DragAndDropImageProps = {
   preview: string | null;
   setPreview: (preview: string | null) => void;
+  setImageFile: (file: string | null) => void;
 };
 
 function DragAndDropImage(props: DragAndDropImageProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
-  const handleChange = (file: File) => {
+  const handleChange = async (file: File) => {
     console.log("File dropped");
-
-    setSelectedFile(file);
+    //resize image
+    console.log(file);
+    const resizedFile = await resizeFile(file);
+    console.log(resizedFile);
+    setSelectedFile(resizedFile as string);
   };
 
   useEffect(() => {
@@ -96,9 +100,8 @@ function DragAndDropImage(props: DragAndDropImageProps) {
       props.setPreview(null);
       return;
     }
-
-    const objectUrl = URL.createObjectURL(selectedFile as Blob);
-    props.setPreview(objectUrl);
+    props.setImageFile(selectedFile);
+    props.setPreview(selectedFile);
   }, [selectedFile]);
 
   const fileTypes = ["JPG", "PNG"];
@@ -165,5 +168,21 @@ function WriteContent(props: WriteContentProps) {
     </div>
   );
 }
+
+const resizeFile = (file: File) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      468,
+      468,
+      "JPEG",
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "base64"
+    );
+  });
 
 export default CreatePost;

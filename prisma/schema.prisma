@@ -16,6 +16,6 @@ model Post {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     content   String
-    imageUrl  String?
+    imageId   String?
     authorId  String
 }
