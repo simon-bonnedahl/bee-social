@@ -10,7 +10,7 @@ function Post(props: PostProps) {
   const { post, author } = props;
   console.log(post.imageUrl);
   return (
-    <div>
+    <div className="rounded-lg bg-white p-8 shadow-xl dark:bg-gray-700">
       <div className="flex items-center gap-x-4">
         <img
           src={author.profileImageUrl}
@@ -18,8 +18,10 @@ function Post(props: PostProps) {
           className="h-12 w-12 rounded-full"
         />
         <div className="flex flex-col">
-          <span className="text-sm font-semibold">@{author.username}</span>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm font-semibold dark:text-white">
+            @{author.username}
+          </span>
+          <span className="text-sm text-gray-500 dark:text-gray-300">
             {dayjs(post.createdAt).fromNow()}
           </span>
         </div>
