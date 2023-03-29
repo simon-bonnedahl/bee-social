@@ -1,5 +1,8 @@
 import React from "react";
 import { RouterOutputs } from "~/utils/api";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 type PostProps = RouterOutputs["post"]["getAll"][number];
 
@@ -16,6 +19,9 @@ function Post(props: PostProps) {
         />
         <div className="flex flex-col">
           <span className="text-sm font-semibold">@{author.username}</span>
+          <span className="text-sm text-gray-500">
+            {dayjs(post.createdAt).fromNow()}
+          </span>
         </div>
       </div>
       <div className="mt-4">
