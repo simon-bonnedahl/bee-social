@@ -6,7 +6,15 @@ const config = {
   ],
 
   theme: {
-    extend: {},
+    fontFamily: {
+      sans: ["Graphik", "sans-serif"],
+    },
+    extend: {
+      colors: {
+        dark: "#000000",
+        light: "#FFFFFF",
+      },
+    },
   },
   plugins: [require("flowbite/plugin")],
 };

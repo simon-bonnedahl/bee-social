@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Resizer from "react-image-file-resizer";
-import { CgSun, CgMoon } from "react-icons/cg";
+import { BsMoon, BsSun } from "react-icons/bs";
 
 type ThemeSwitchProps = {
   width?: string;
@@ -26,8 +26,8 @@ function ThemeSwitch(props: ThemeSwitchProps) {
       className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
     >
       <div className="mt-2 flex items-center gap-5  ">
-        {darkMode && <CgSun className="h-8 w-8 " />}
-        {!darkMode && <CgMoon className="h-8 w-8 " />}
+        {darkMode && <BsSun className="h-7 w-7 " />}
+        {!darkMode && <BsMoon className="h-7 w-7 " />}
 
         {props.width && props.width === "full" && "Switch theme"}
       </div>

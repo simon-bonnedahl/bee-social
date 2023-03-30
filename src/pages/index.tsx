@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/nextjs";
+import { SignIn, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Feed from "~/components/Feed";
@@ -15,10 +15,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-slate-700">
-        <SideMenu profileImageUrl={user?.profileImageUrl ?? null} />
+      <main className="flex min-h-screen items-center justify-center">
+        {!user && <SignIn />}
 
-        <Feed />
+        {user && (
+          <>
+            <SideMenu profileImageUrl={user?.profileImageUrl ?? null} />
+            <Feed />
+          </>
+        )}
       </main>
     </>
   );

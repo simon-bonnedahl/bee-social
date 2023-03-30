@@ -1,17 +1,14 @@
 import { Sidebar, Spinner } from "@alfiejones/flowbite-react";
+import { SignOutButton } from "@clerk/nextjs";
 import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import {
-  AiFillAlert,
-  AiOutlineHome,
-  AiOutlinePlusCircle,
-  AiOutlineSearch,
-} from "react-icons/ai";
+import { useEffect, useState } from "react";
+import { AiOutlineHome, AiOutlineSearch } from "react-icons/ai";
 import { IoPaperPlaneOutline, IoSettingsOutline } from "react-icons/io5";
+import { VscSignOut } from "react-icons/vsc";
 import CreatePost from "./CreatePost";
 
 import Logo from "./Logo";
+import Searcher from "./Searcher";
 import ThemeSwitch from "./ThemeSwitch";
 
 type SideMenuProps = {
@@ -31,9 +28,11 @@ function SideMenu(props: SideMenuProps) {
     window.addEventListener("resize", handleResize);
     // call the handler right away so state gets updated with initial window size
     handleResize();
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  if (width === null) return;
+
+  if (!width) return null;
 
   return width < BREAKPOINT_TABLET ? (
     <SmallSideMenu profileImageUrl={props.profileImageUrl} />
@@ -46,8 +45,8 @@ function LargeSideMenu(props: SideMenuProps) {
   return (
     <div className="fixed top-0 left-0 h-full">
       <Sidebar
-        aria-label="Sidebar with logo branding example"
-        className="w-80 border-x border-slate-300"
+        aria-label="Large sidebar"
+        className="w-80 border-x border-slate-300 "
       >
         <div className="p-4">
           <Logo size="full" />
@@ -63,15 +62,7 @@ function LargeSideMenu(props: SideMenuProps) {
                 Home
               </div>
             </Sidebar.Item>
-            <Sidebar.Item
-              href="#"
-              className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-            >
-              <div className="mt-2 flex items-center gap-5  ">
-                <AiOutlineSearch className="h-8 w-8" />
-                Search
-              </div>
-            </Sidebar.Item>
+            <Searcher width="full" />
             <Sidebar.Item
               href="#"
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
@@ -113,6 +104,14 @@ function LargeSideMenu(props: SideMenuProps) {
               </div>
             </Sidebar.Item>
             <ThemeSwitch width="full" />
+            <Sidebar.Item className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold">
+              <SignOutButton>
+                <div className="mt-2 flex items-center gap-5  ">
+                  <VscSignOut className="h-8 w-8 " />
+                  Sign Out
+                </div>
+              </SignOutButton>
+            </Sidebar.Item>
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
@@ -140,14 +139,7 @@ function SmallSideMenu(props: SideMenuProps) {
                 <AiOutlineHome className="h-8 w-8" />
               </div>
             </Sidebar.Item>
-            <Sidebar.Item
-              href="#"
-              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-            >
-              <div className="mt-2 flex items-center gap-5  ">
-                <AiOutlineSearch className="h-8 w-8" />
-              </div>
-            </Sidebar.Item>
+            <Searcher />
             <Sidebar.Item
               href="#"
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
@@ -186,6 +178,14 @@ function SmallSideMenu(props: SideMenuProps) {
               </div>
             </Sidebar.Item>
             <ThemeSwitch />
+            <Sidebar.Item className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold">
+              <SignOutButton>
+                <div className="mt-2 flex items-center gap-5  ">
+                  <VscSignOut className="h-8 w-8 " />
+                </div>
+              </SignOutButton>
+            </Sidebar.Item>
+            <Searcher />
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>

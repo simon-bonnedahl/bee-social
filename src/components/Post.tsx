@@ -31,7 +31,7 @@ function Post(props: PostProps) {
   };
 
   return (
-    <div className="rounded-lg bg-white p-8 shadow-xl dark:bg-gray-700">
+    <div className="rounded-lg bg-white p-8 shadow-xl dark:bg-gray-800">
       <div className="flex items-center gap-x-4">
         <Image
           src={author.profileImageUrl}

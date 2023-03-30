@@ -6,3 +6,10 @@
 textarea {
     resize: none;
 }
+
+html.dark {
+    background-color: #1f2937;
+}
+html.light {
+    background-color: white;
+}
