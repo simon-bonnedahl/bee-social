@@ -12,10 +12,35 @@ datasource db {
 }
 
 model Post {
+    id        Int       @id @default(autoincrement())
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    content   String
+    imageId   String?
+    authorId  String
+    likes     Like[]
+    comments  Comment[]
+}
+
+model Like {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    postId    Int
+    post      Post     @relation(fields: [postId], references: [id])
+    userId    String
+
+    @@index([postId])
+}
+
+model Comment {
     id        Int      @id @default(autoincrement())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     content   String
-    imageId   String?
-    authorId  String
+    postId    Int
+    userId    String
+    Post      Post     @relation(fields: [postId], references: [id])
+
+    @@index([postId])
 }

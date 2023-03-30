@@ -15,7 +15,7 @@ function Feed() {
   return (
     <div className="my-10 flex flex-col items-center gap-6">
       {[...data].map(({ post, author }) => (
-        <Post post={post} author={author} />
+        <Post post={post} author={author} key={post.id} />
       ))}
     </div>
   );

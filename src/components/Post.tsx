@@ -1,14 +1,36 @@
 import React from "react";
-import { RouterOutputs } from "~/utils/api";
+import { api, RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { BsChat, BsHeart } from "react-icons/bs";
+import { toast } from "react-hot-toast";
+import { useUser } from "@clerk/nextjs";
+import { Spinner } from "flowbite-react";
+import CreateComment from "./CreateComment";
 dayjs.extend(relativeTime);
 
 type PostProps = RouterOutputs["post"]["getAll"][number];
 
 function Post(props: PostProps) {
   const { post, author } = props;
-  console.log(post.imageUrl);
+
+  const ctx = api.useContext();
+  const { user } = useUser();
+  const { mutate } = api.post.like.useMutation({
+    onSuccess: () => {
+      void ctx.post.getAll.invalidate();
+    },
+    onError: (e: any) => {
+      console.log(e);
+      toast.error("Something went wrong");
+    },
+  });
+
+  const onLike = async () => {
+    mutate({ postId: post.id });
+  };
+
   return (
     <div className="rounded-lg bg-white p-8 shadow-xl dark:bg-gray-700">
       <div className="flex items-center gap-x-4">
@@ -20,9 +42,10 @@ function Post(props: PostProps) {
         <div className="flex flex-col">
           <span className="text-sm font-semibold dark:text-white">
             @{author.username}
-          </span>
-          <span className="text-sm text-gray-500 dark:text-gray-300">
-            {dayjs(post.createdAt).fromNow()}
+            <span className="text-xs text-gray-500 dark:text-gray-300">
+              {" · "}
+              {dayjs(post.createdAt).fromNow()}
+            </span>
           </span>
         </div>
       </div>
@@ -35,57 +58,65 @@ function Post(props: PostProps) {
         )}
       </div>
       <div className="mt-4 flex items-center gap-x-4">
-        <button className="flex items-center gap-x-2">
-          <svg
-            className="h-5 w-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-          <span className="text-sm text-gray-400">Like</span>
+        <button className="flex items-center gap-x-2" onClick={onLike}>
+          {post.likes.find((like) => like.userId === user?.id) ? (
+            <AiFillHeart className="h-7 w-7 text-red-500" />
+          ) : (
+            <AiOutlineHeart className="h-7 w-7 dark:text-white" />
+          )}
+
+          <span className="dark:text-white">{post.likes.length}</span>
         </button>
-        <button className="flex items-center gap-x-2">
-          <svg
-            className="h-5 w-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 13l4 4L19 7"
-            ></path>
-          </svg>
-          <span className="text-sm text-gray-400">Comment</span>
-        </button>
-        <button className="flex items-center gap-x-2">
-          <svg
-            className="h-5 w-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-          <span className="text-sm text-gray-400">Share</span>
-        </button>
+        <div className="flex items-center gap-x-2">
+          <CreateComment />
+          <span className="dark:text-white">{post.comments.length}</span>
+        </div>
+      </div>
+      <div className="mt-4">
+        <CommentSection postId={post.id} />
+      </div>
+    </div>
+  );
+}
+
+type CommentSectionProps = {
+  postId: number;
+};
+function CommentSection(props: CommentSectionProps) {
+  //fetch comments
+  const { data, isLoading } = api.post.getComments.useQuery({
+    postId: props.postId,
+  });
+  if (isLoading) return <Spinner color="warning" />;
+  if (!data) return <div>Something went wrong loading comments</div>;
+
+  return (
+    <div>
+      <div className="flex max-h-24 flex-col items-center gap-2 overflow-y-scroll">
+        {[...data].map(({ comment, user }) => {
+          return (
+            <div className="flex w-full items-center gap-x-4">
+              <img
+                src={user.profileImageUrl}
+                alt="Profile Picture"
+                className="h-10 w-10 rounded-full"
+              />
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold dark:text-white">
+                  @{user.username}
+                  <span className="text-xs text-gray-500 dark:text-gray-300">
+                    {" · "}
+                    {dayjs(comment.createdAt).fromNow()}
+                  </span>
+                </span>
+
+                <p className="text-sm text-gray-700 dark:text-white">
+                  {comment.content}
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

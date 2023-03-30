@@ -28,7 +28,7 @@ function CreatePost() {
       toast.success("Post created");
       void ctx.post.getAll.invalidate();
     },
-    onError: (e) => {
+    onError: (e: any) => {
       console.log(e);
       toast.error("Something went wrong");
     },
@@ -85,10 +85,11 @@ function CreatePost() {
             totalPages={2}
             onPageChange={(page) => onPageChange(page)}
           />
-          {page === 2 && content && (
+          {page === 2 && (
             <Button
               className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
               onClick={onPost}
+              disabled={!content || !imageFile}
             >
               {isPosting ? <Spinner color="warning" /> : "Post"}
             </Button>
