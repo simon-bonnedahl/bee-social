@@ -34,12 +34,10 @@ function CreatePost() {
     },
   });
 
-  const onPost = async () => {
-    if (!imageFile) return;
-
-    mutate({ content: content, image: imageFile });
-
+  const onPost = () => {
     // Send the post data to the server or perform any other necessary action
+    if (!imageFile) return;
+    mutate({ content: content, image: imageFile });
   };
 
   const onPageChange = (page: number) => {
@@ -88,7 +86,7 @@ function CreatePost() {
           {page === 2 && (
             <Button
               className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
-              onClick={onPost}
+              onClick={() => onPost}
               disabled={!content || !imageFile}
             >
               {isPosting ? <Spinner color="warning" /> : "Post"}
@@ -140,13 +138,14 @@ function DragAndDropImage(props: DragAndDropImageProps) {
           name="file"
           types={fileTypes}
           minSize={0.1}
-          children={
-            <div className="flex h-64 flex-col items-center justify-center gap-2">
-              <AiOutlinePlusCircle size={80} />
-              <span className="text-lg">Drag and drop or click to upload</span>
-            </div>
-          }
-        />
+        >
+          <div className="flex h-64 flex-col items-center justify-center gap-2">
+            <AiOutlinePlusCircle size={80} className="dark:text-white" />
+            <span className="text-lg dark:text-white">
+              Drag and drop or click to upload
+            </span>
+          </div>
+        </FileUploader>
       )}
     </>
   );

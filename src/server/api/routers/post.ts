@@ -8,9 +8,7 @@ import { Comment, Like, Post } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import axios from "axios";
 import { randomUUID } from "crypto";
-import { decode } from "punycode";
 import { z } from "zod";
 
 import {
@@ -19,7 +17,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-const { BlobServiceClient } = require("@azure/storage-blob");
+import { BlobServiceClient } from "@azure/storage-blob";
 
 const ratelimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -281,7 +279,7 @@ export const postRouter = createTRPCRouter({
 
 const uploadImage = async (file: string) => {
   const blobServiceClient = BlobServiceClient.fromConnectionString(
-    process.env.AZURE_STORAGE_CONNECTION_STRING
+    process.env.AZURE_STORAGE_CONNECTION_STRING ?? ""
   );
 
   const containerClient = blobServiceClient.getContainerClient("images");

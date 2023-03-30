@@ -27,7 +27,7 @@ function CreateComment(props: CreateCommentProps) {
     },
   });
 
-  const onComment = async () => {
+  const onComment = () => {
     // Send the comment data to the server or perform any other necessary action
     mutate({ content, postId: props.postId });
   };
@@ -45,7 +45,7 @@ function CreateComment(props: CreateCommentProps) {
         <Modal.Footer className="flex justify-between">
           <Button
             className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
-            onClick={onComment}
+            onClick={() => onComment}
             disabled={!content || isCommenting}
           >
             {isCommenting ? <Spinner color="warning" /> : "Comment"}
