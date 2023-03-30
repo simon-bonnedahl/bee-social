@@ -15,7 +15,7 @@ import Resizer from "react-image-file-resizer";
 import { toast } from "react-hot-toast";
 
 type CreatePostProps = {
-  size?: string;
+  width?: string;
 };
 function CreatePost(props: CreatePostProps) {
   const [content, setContent] = useState("");
@@ -67,7 +67,7 @@ function CreatePost(props: CreatePostProps) {
       >
         <div className="mt-2 flex items-center gap-5  ">
           <AiOutlinePlusCircle className="h-8 w-8 " />
-          {props.size === "full" && <span className="">Post</span>}
+          {props.width && props.width === "full" && "Post"}
         </div>
       </Sidebar.Item>
       <Modal show={visible} onClose={() => setVisible(false)} size={size}>
