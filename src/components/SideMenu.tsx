@@ -1,4 +1,4 @@
-import { Sidebar } from "@alfiejones/flowbite-react";
+import { Sidebar, Spinner } from "@alfiejones/flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -12,9 +12,10 @@ import { IoPaperPlaneOutline, IoSettingsOutline } from "react-icons/io5";
 import CreatePost from "./CreatePost";
 
 import Logo from "./Logo";
+import ThemeSwitch from "./ThemeSwitch";
 
 type SideMenuProps = {
-  profileImageUrl: string;
+  profileImageUrl: string | null;
   width: number;
 };
 function SideMenu(props: SideMenuProps) {
@@ -57,17 +58,21 @@ function SideMenu(props: SideMenuProps) {
               </Sidebar.Item>
               <CreatePost />
               <Sidebar.Item
-                href="#"
+                href="/profile"
                 className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
               >
                 <div className="mt-2 flex items-center gap-5  ">
-                  <Image
-                    className="h-8 w-8 rounded-full"
-                    src={props.profileImageUrl}
-                    alt="Profile Picture"
-                    width={35}
-                    height={35}
-                  />
+                  {props.profileImageUrl ? (
+                    <Image
+                      className="h-8 w-8 rounded-full"
+                      src={props.profileImageUrl}
+                      alt="Profile Picture"
+                      width={35}
+                      height={35}
+                    />
+                  ) : (
+                    <Spinner color="warning" />
+                  )}
                 </div>
               </Sidebar.Item>
             </Sidebar.ItemGroup>
@@ -80,6 +85,7 @@ function SideMenu(props: SideMenuProps) {
                   <IoSettingsOutline className="h-8 w-8 " />
                 </div>
               </Sidebar.Item>
+              <ThemeSwitch />
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </Sidebar>
@@ -126,17 +132,21 @@ function SideMenu(props: SideMenuProps) {
             </Sidebar.Item>
             <CreatePost width="full" />
             <Sidebar.Item
-              href="#"
+              href="/profile"
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
-                <Image
-                  className="h-8 w-8 rounded-full"
-                  src={props.profileImageUrl}
-                  alt="Profile Picture"
-                  width={35}
-                  height={35}
-                />
+                {props.profileImageUrl ? (
+                  <Image
+                    className="h-8 w-8 rounded-full"
+                    src={props.profileImageUrl}
+                    alt="Profile Picture"
+                    width={35}
+                    height={35}
+                  />
+                ) : (
+                  <Spinner color="warning" />
+                )}
                 Profile
               </div>
             </Sidebar.Item>
@@ -151,6 +161,7 @@ function SideMenu(props: SideMenuProps) {
                 Settings
               </div>
             </Sidebar.Item>
+            <ThemeSwitch width="full" />
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>

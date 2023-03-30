@@ -45,7 +45,10 @@ function CreatePost(props: CreatePostProps) {
 
   const onPost = () => {
     // Send the post data to the server or perform any other necessary action
-    if (!imageFile) return;
+    if (!imageFile) {
+      toast.error("Please upload an image");
+      return;
+    }
     mutate({ content: content, image: imageFile });
   };
 
@@ -98,7 +101,7 @@ function CreatePost(props: CreatePostProps) {
           {page === 2 && (
             <Button
               className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
-              onClick={() => onPost}
+              onClick={onPost}
               disabled={!content || !imageFile}
             >
               {isPosting ? <Spinner color="warning" /> : "Post"}

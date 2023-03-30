@@ -18,7 +18,7 @@ const Home: NextPage = () => {
 
       <main className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-slate-700">
         <SideMenu
-          profileImageUrl={user?.profileImageUrl ?? ""}
+          profileImageUrl={user?.profileImageUrl ?? null}
           width={width ?? 2000}
         />
 
