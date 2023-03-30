@@ -21,7 +21,7 @@ function SideMenu(props: SideMenuProps) {
     <div className="fixed top-0 left-0 h-full">
       <Sidebar
         aria-label="Sidebar with logo branding example"
-        className="w-64 border-x border-slate-300 "
+        className=" w-80 border-x border-slate-300 "
       >
         <div className="p-4">
           <Logo size="full" />
@@ -94,16 +94,16 @@ function SideMenuSmall(props: SideMenuProps) {
     <div className="fixed top-0 left-0 h-full">
       <Sidebar
         aria-label="Sidebar with logo branding example"
-        className="w-24 border-x border-slate-300 "
+        className="w-fit border-x border-slate-300"
       >
         <div className="p-4">
           <Logo />
         </div>
-        <Sidebar.Items>
+        <Sidebar.Items className="mt-8">
           <Sidebar.ItemGroup>
             <Sidebar.Item
               href="#"
-              className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+              className=" w-fit text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
                 <AiOutlineHome className="h-8 w-8" />
@@ -111,7 +111,7 @@ function SideMenuSmall(props: SideMenuProps) {
             </Sidebar.Item>
             <Sidebar.Item
               href="#"
-              className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
                 <AiOutlineSearch className="h-8 w-8" />
@@ -119,7 +119,7 @@ function SideMenuSmall(props: SideMenuProps) {
             </Sidebar.Item>
             <Sidebar.Item
               href="#"
-              className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
                 <IoPaperPlaneOutline className="h-8 w-8" />
@@ -128,7 +128,7 @@ function SideMenuSmall(props: SideMenuProps) {
             <CreatePost />
             <Sidebar.Item
               href="#"
-              className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
                 <Image
@@ -144,7 +144,7 @@ function SideMenuSmall(props: SideMenuProps) {
           <Sidebar.ItemGroup>
             <Sidebar.Item
               href="#"
-              className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
                 <IoSettingsOutline className="h-8 w-8 duration-200 ease-in-out hover:scale-110" />

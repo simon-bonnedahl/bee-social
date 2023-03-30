@@ -3,9 +3,14 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Feed from "~/components/Feed";
 import Header from "~/components/Header";
-import { SideMenu, SideMenuSmall } from "~/components/SideMenu";
+import {
+  SideMenu,
+  SideMenuSmall,
+  useWindowDimensions,
+} from "~/components/SideMenu";
 
 const Home: NextPage = () => {
+  const { width } = useWindowDimensions();
   const { user } = useUser();
   return (
     <>
@@ -16,7 +21,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="flex min-h-screen items-center justify-center bg-slate-100 dark:bg-slate-700">
-        {true && 1035 > 1024 ? (
+        {width && width > 1024 ? (
           <SideMenu profileImageUrl={user?.profileImageUrl ?? ""} />
         ) : (
           <SideMenuSmall profileImageUrl={user?.profileImageUrl ?? ""} />
