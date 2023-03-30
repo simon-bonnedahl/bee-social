@@ -63,10 +63,24 @@ const addUserDataToPosts = async (
         message: `Author has no GitHub Account: ${author.id}`,
       });
     }
+    if (!post.imageId) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `Post has no imageId: ${post.id}`,
+      });
+    }
+    if (!sasToken) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `SAS Token not found`,
+      });
+    }
     return {
       post: {
         ...post,
-        imageUrl: `https://beesocialstorage.blob.core.windows.net/images/${post.imageId}.png?${sasToken}`,
+        imageUrl:
+          `https://beesocialstorage.blob.core.windows.net/images/${post.imageId}.png?${sasToken}` ??
+          "(image not found)",
       },
       author: {
         ...author,

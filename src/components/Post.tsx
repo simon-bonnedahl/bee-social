@@ -37,6 +37,8 @@ function Post(props: PostProps) {
           src={author.profileImageUrl}
           alt="Profile Picture"
           className="h-12 w-12 rounded-full"
+          width={40}
+          height={40}
         />
         <div className="flex flex-col">
           <span className="text-sm font-semibold dark:text-white">
@@ -53,7 +55,13 @@ function Post(props: PostProps) {
       </div>
       <div className="mt-4">
         {post.imageUrl && (
-          <Image src={post.imageUrl} alt="Post Image" className="rounded-lg" />
+          <Image
+            src={post.imageUrl}
+            alt="Post Image"
+            className="rounded-lg"
+            width={500}
+            height={500}
+          />
         )}
       </div>
       <div className="mt-4 flex items-center gap-x-4">
@@ -95,12 +103,14 @@ function CommentSection(props: CommentSectionProps) {
       <div className="flex max-h-28 flex-col items-center gap-2 overflow-y-scroll">
         {[...data].map(({ comment, user }) => {
           return (
-            <div className="flex w-full items-center gap-x-4">
+            <div className="flex w-full items-center gap-x-4" key={comment.id}>
               {user.profileImageUrl && (
                 <Image
                   src={user.profileImageUrl}
                   alt="Profile Picture"
                   className="h-10 w-10 rounded-full"
+                  width={40}
+                  height={40}
                 />
               )}
 
