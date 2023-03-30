@@ -66,12 +66,7 @@ const addUserDataToPosts = async (
     return {
       post: {
         ...post,
-        imageUrl:
-          "https://beesocialstorage.blob.core.windows.net/images/" +
-          post.imageId +
-          ".png" +
-          "?" +
-          sasToken,
+        imageUrl: `https://beesocialstorage.blob.core.windows.net/images/${post.imageId}.png?${sasToken}`,
       },
       author: {
         ...author,
@@ -300,15 +295,15 @@ const uploadImage = async (file: string) => {
 };
 
 const sasToken = generateSasToken(
-  process.env.AZURE_STORAGE_ACCOUNT_NAME,
-  process.env.AZURE_STORAGE_ACCOUNT_KEY,
+  process.env.AZURE_STORAGE_ACCOUNT_NAME ?? "",
+  process.env.AZURE_STORAGE_ACCOUNT_KEY ?? "",
   "images"
 );
 
 function generateSasToken(
-  accountName: any,
-  accountKey: any,
-  containerName: any
+  accountName: string,
+  accountKey: string,
+  containerName: string
 ) {
   // Create the SAS token
   const startDate = new Date();

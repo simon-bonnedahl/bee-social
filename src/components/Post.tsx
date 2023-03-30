@@ -1,4 +1,3 @@
-import React from "react";
 import { api, RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -7,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { Spinner } from "flowbite-react";
 import CreateComment from "./CreateComment";
+import Image from "next/image";
 dayjs.extend(relativeTime);
 
 type PostProps = RouterOutputs["post"]["getAll"][number];
@@ -26,14 +26,14 @@ function Post(props: PostProps) {
     },
   });
 
-  const onLike = async () => {
+  const onLike = () => {
     mutate({ postId: post.id });
   };
 
   return (
     <div className="rounded-lg bg-white p-8 shadow-xl dark:bg-gray-700">
       <div className="flex items-center gap-x-4">
-        <img
+        <Image
           src={author.profileImageUrl}
           alt="Profile Picture"
           className="h-12 w-12 rounded-full"
@@ -53,7 +53,7 @@ function Post(props: PostProps) {
       </div>
       <div className="mt-4">
         {post.imageUrl && (
-          <img src={post.imageUrl} alt="Post Image" className="rounded-lg" />
+          <Image src={post.imageUrl} alt="Post Image" className="rounded-lg" />
         )}
       </div>
       <div className="mt-4 flex items-center gap-x-4">
@@ -96,11 +96,14 @@ function CommentSection(props: CommentSectionProps) {
         {[...data].map(({ comment, user }) => {
           return (
             <div className="flex w-full items-center gap-x-4">
-              <img
-                src={user.profileImageUrl}
-                alt="Profile Picture"
-                className="h-10 w-10 rounded-full"
-              />
+              {user.profileImageUrl && (
+                <Image
+                  src={user.profileImageUrl}
+                  alt="Profile Picture"
+                  className="h-10 w-10 rounded-full"
+                />
+              )}
+
               <div className="flex flex-col">
                 <span className="text-xs font-semibold dark:text-white">
                   @{user.username}
