@@ -3,7 +3,6 @@ import { api, RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { BsChat, BsHeart } from "react-icons/bs";
 import { toast } from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { Spinner } from "flowbite-react";
@@ -68,7 +67,7 @@ function Post(props: PostProps) {
           <span className="dark:text-white">{post.likes.length}</span>
         </button>
         <div className="flex items-center gap-x-2">
-          <CreateComment />
+          <CreateComment postId={post.id} />
           <span className="dark:text-white">{post.comments.length}</span>
         </div>
       </div>
@@ -82,6 +81,7 @@ function Post(props: PostProps) {
 type CommentSectionProps = {
   postId: number;
 };
+
 function CommentSection(props: CommentSectionProps) {
   //fetch comments
   const { data, isLoading } = api.post.getComments.useQuery({
@@ -92,7 +92,7 @@ function CommentSection(props: CommentSectionProps) {
 
   return (
     <div>
-      <div className="flex max-h-24 flex-col items-center gap-2 overflow-y-scroll">
+      <div className="flex max-h-28 flex-col items-center gap-2 overflow-y-scroll">
         {[...data].map(({ comment, user }) => {
           return (
             <div className="flex w-full items-center gap-x-4">

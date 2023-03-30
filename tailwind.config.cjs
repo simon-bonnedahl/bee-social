@@ -8,7 +8,7 @@ const config = {
   theme: {
     extend: {},
   },
-  plugins: [require("flowbite/plugin")],
+  
 };
 
 module.exports = config;
