@@ -16,82 +16,33 @@ import ThemeSwitch from "./ThemeSwitch";
 
 type SideMenuProps = {
   profileImageUrl: string | null;
-  width: number;
 };
+
 function SideMenu(props: SideMenuProps) {
   const BREAKPOINT_TABLET = 1048;
-  if (props.width < BREAKPOINT_TABLET)
-    return (
-      <div className="fixed top-0 left-0 h-full">
-        <Sidebar
-          aria-label="Sidebar with logo branding example"
-          className="w-fit border-x border-slate-300"
-        >
-          <div className="p-4">
-            <Logo />
-          </div>
-          <Sidebar.Items className="mt-8">
-            <Sidebar.ItemGroup>
-              <Sidebar.Item
-                href="#"
-                className=" w-fit text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-              >
-                <div className="mt-2 flex items-center gap-5  ">
-                  <AiOutlineHome className="h-8 w-8" />
-                </div>
-              </Sidebar.Item>
-              <Sidebar.Item
-                href="#"
-                className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-              >
-                <div className="mt-2 flex items-center gap-5  ">
-                  <AiOutlineSearch className="h-8 w-8" />
-                </div>
-              </Sidebar.Item>
-              <Sidebar.Item
-                href="#"
-                className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-              >
-                <div className="mt-2 flex items-center gap-5  ">
-                  <IoPaperPlaneOutline className="h-8 w-8" />
-                </div>
-              </Sidebar.Item>
-              <CreatePost />
-              <Sidebar.Item
-                href="/profile"
-                className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-              >
-                <div className="mt-2 flex items-center gap-5  ">
-                  {props.profileImageUrl ? (
-                    <Image
-                      className="h-8 w-8 rounded-full"
-                      src={props.profileImageUrl}
-                      alt="Profile Picture"
-                      width={35}
-                      height={35}
-                    />
-                  ) : (
-                    <Spinner color="warning" />
-                  )}
-                </div>
-              </Sidebar.Item>
-            </Sidebar.ItemGroup>
-            <Sidebar.ItemGroup>
-              <Sidebar.Item
-                href="#"
-                className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-              >
-                <div className="mt-2 flex items-center gap-5  ">
-                  <IoSettingsOutline className="h-8 w-8 " />
-                </div>
-              </Sidebar.Item>
-              <ThemeSwitch />
-            </Sidebar.ItemGroup>
-          </Sidebar.Items>
-        </Sidebar>
-      </div>
-    );
-  //Sidemenu for desktop
+  const [width, setWidth] = useState<number | null>(null);
+
+  useEffect(() => {
+    // get the width of the window
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+    // add the event listener
+    window.addEventListener("resize", handleResize);
+    // call the handler right away so state gets updated with initial window size
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  if (width === null) return;
+
+  return width < BREAKPOINT_TABLET ? (
+    <SmallSideMenu profileImageUrl={props.profileImageUrl} />
+  ) : (
+    <LargeSideMenu profileImageUrl={props.profileImageUrl} />
+  );
+}
+
+function LargeSideMenu(props: SideMenuProps) {
   return (
     <div className="fixed top-0 left-0 h-full">
       <Sidebar
@@ -162,6 +113,79 @@ function SideMenu(props: SideMenuProps) {
               </div>
             </Sidebar.Item>
             <ThemeSwitch width="full" />
+          </Sidebar.ItemGroup>
+        </Sidebar.Items>
+      </Sidebar>
+    </div>
+  );
+}
+
+function SmallSideMenu(props: SideMenuProps) {
+  return (
+    <div className="fixed top-0 left-0 h-full">
+      <Sidebar
+        aria-label="Sidebar with logo branding example"
+        className="w-fit border-x border-slate-300"
+      >
+        <div className="p-4">
+          <Logo />
+        </div>
+        <Sidebar.Items className="mt-8">
+          <Sidebar.ItemGroup>
+            <Sidebar.Item
+              href="#"
+              className=" w-fit text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <div className="mt-2 flex items-center gap-5  ">
+                <AiOutlineHome className="h-8 w-8" />
+              </div>
+            </Sidebar.Item>
+            <Sidebar.Item
+              href="#"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <div className="mt-2 flex items-center gap-5  ">
+                <AiOutlineSearch className="h-8 w-8" />
+              </div>
+            </Sidebar.Item>
+            <Sidebar.Item
+              href="#"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <div className="mt-2 flex items-center gap-5  ">
+                <IoPaperPlaneOutline className="h-8 w-8" />
+              </div>
+            </Sidebar.Item>
+            <CreatePost />
+            <Sidebar.Item
+              href="/profile"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <div className="mt-2 flex items-center gap-5  ">
+                {props.profileImageUrl ? (
+                  <Image
+                    className="h-8 w-8 rounded-full"
+                    src={props.profileImageUrl}
+                    alt="Profile Picture"
+                    width={35}
+                    height={35}
+                  />
+                ) : (
+                  <Spinner color="warning" />
+                )}
+              </div>
+            </Sidebar.Item>
+          </Sidebar.ItemGroup>
+          <Sidebar.ItemGroup>
+            <Sidebar.Item
+              href="#"
+              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <div className="mt-2 flex items-center gap-5  ">
+                <IoSettingsOutline className="h-8 w-8 " />
+              </div>
+            </Sidebar.Item>
+            <ThemeSwitch />
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>
