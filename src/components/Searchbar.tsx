@@ -1,5 +1,3 @@
-import React from "react";
-
 function Searchbar() {
   return (
     <div className="md:w-64 xl:w-96">

@@ -1,5 +1,11 @@
 import { useUser } from "@clerk/nextjs";
-import { Button, Modal, Pagination, Spinner } from "flowbite-react";
+import {
+  Button,
+  Modal,
+  Pagination,
+  Sidebar,
+  Spinner,
+} from "@alfiejones/flowbite-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
@@ -8,7 +14,10 @@ import { api } from "~/utils/api";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-hot-toast";
 
-function CreatePost() {
+type CreatePostProps = {
+  size?: string;
+};
+function CreatePost(props: CreatePostProps) {
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -52,12 +61,15 @@ function CreatePost() {
 
   return (
     <React.Fragment>
-      <Button
+      <Sidebar.Item
         onClick={() => setVisible(true)}
-        className="bg-orange-400 p-0 px-0 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
+        className=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
       >
-        Post
-      </Button>
+        <div className="mt-2 flex items-center gap-5  ">
+          <AiOutlinePlusCircle className="h-8 w-8 " />
+          {props.size === "full" && <span className="">Post</span>}
+        </div>
+      </Sidebar.Item>
       <Modal show={visible} onClose={() => setVisible(false)} size={size}>
         <Modal.Header>Create new post</Modal.Header>
         <Modal.Body>

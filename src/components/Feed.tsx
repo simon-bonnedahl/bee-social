@@ -1,5 +1,4 @@
-import { Spinner } from "flowbite-react";
-import React from "react";
+import { Spinner } from "@alfiejones/flowbite-react";
 import { api } from "~/utils/api";
 import Post from "./Post";
 

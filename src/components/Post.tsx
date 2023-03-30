@@ -4,7 +4,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { toast } from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
-import { Spinner } from "flowbite-react";
+import { Spinner } from "@alfiejones/flowbite-react";
 import CreateComment from "./CreateComment";
 import Image from "next/image";
 dayjs.extend(relativeTime);

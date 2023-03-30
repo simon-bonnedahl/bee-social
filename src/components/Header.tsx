@@ -1,16 +1,8 @@
-import {
-  SignIn,
-  SignInButton,
-  SignOutButton,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import logo from "../../public/bee-social-logo.png";
 import Searchbar from "./Searchbar";
-import ThemeSwitch from "./ThemeSwitch";
 import CreatePost from "./CreatePost";
 
 function Header() {
@@ -43,7 +35,6 @@ function Header() {
         ) : (
           <SignInButton />
         )}
-        <ThemeSwitch />
       </div>
     </header>
   );

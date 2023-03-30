@@ -1,4 +1,4 @@
-import { Button, Modal, Spinner } from "flowbite-react";
+import { Button, Modal, Spinner } from "@alfiejones/flowbite-react";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { BsChat } from "react-icons/bs";
