@@ -2,9 +2,73 @@ import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { Spinner } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import Post from "~/components/Post";
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
+import { SignIn, useUser } from "@clerk/nextjs";
+import { SideMenu } from "~/components/SideMenu";
+import Feed from "~/components/Feed";
+import { User } from "@clerk/nextjs/dist/api";
+import { BsThreeDots } from "react-icons/bs";
+
+const ProfileBio = (user: any) => {
+  return (
+    //Bio like instagram
+    <div className="w-fill flex items-center ">
+      <div className=" py-12 px-24">
+        <Image
+          src={user.profileImageUrl}
+          alt="Profile Picture"
+          className="h-40 w-40 rounded-full"
+          width={200}
+          height={200}
+        />
+      </div>
+
+      <div className="flex h-full flex-col justify-around ">
+        {/*Top*/}
+        <div className="flex items-center gap-6 py-2">
+          <span className="text-lg font-semibold dark:text-white">
+            @{user.username}
+          </span>
+          <div className="flex gap-2">
+            <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
+              Follow
+            </Button>
+            <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
+              Message
+            </Button>
+            <button className="px-1">
+              <BsThreeDots className="h-8 w-8" />
+            </button>
+          </div>
+        </div>
+
+        {/*Stats*/}
+        <div className="flex gap-6  py-2 text-lg">
+          <div>
+            <span className="font-semibold">100 </span>posts
+          </div>
+          <div>
+            <span className="font-semibold">100 </span>followers
+          </div>
+          <div>
+            <span className="font-semibold">100 </span>following
+          </div>
+        </div>
+
+        {/*Bio*/}
+        <div className=" h-24 max-w-2xl">
+          <span className="text-sm font-semibold">{user.fullName}</span>
+          <p className=" flex-wrap break-words">
+            (bio) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+            vitae nisl vitae nisl lacinia ultricies. Sed vitae nisl vitae nisl
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.post.getPostsByUserId.useQuery({
@@ -28,26 +92,27 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.user.getByUsername.useQuery({
     username,
   });
+  const { user } = useUser();
   if (!data) return <div>404</div>;
   return (
     <>
       <Head>
         <title>{data.username}</title>
       </Head>
+      <main className="flex min-h-screen items-center justify-center">
+        {!user && <SignIn />}
 
-      <div className="relative h-36 bg-slate-600">
-        <Image
-          src={data.profileImageUrl}
-          alt={`${data.username}'s profile pic`}
-          width={128}
-          height={128}
-          className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-full border-4 border-black bg-black"
-        />
-      </div>
-      <div className="h-[64px]"></div>
-      <div className="p-4 text-2xl font-bold">{`@${data.username}`}</div>
-      <div className="w-full border-b border-slate-400" />
-      <ProfileFeed userId={data.id} />
+        {user && (
+          <>
+            <SideMenu profileImageUrl={user?.profileImageUrl ?? null} />
+          </>
+        )}
+        <div className="ml-64 flex flex-col gap-8">
+          <ProfileBio {...data} />
+          <div className="h-0.5 w-full border-b border-gray-300"></div>
+          <ProfileFeed userId={data.id} />
+        </div>
+      </main>
     </>
   );
 };

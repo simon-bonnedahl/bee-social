@@ -46,7 +46,7 @@ function LargeSideMenu(props: SideMenuProps) {
     <div className="fixed top-0 left-0 h-full">
       <Sidebar
         aria-label="Large sidebar"
-        className="w-80 border-x border-slate-300 "
+        className=" w-64 border-x border-slate-300 "
       >
         <div className="p-4">
           <Logo size="full" />

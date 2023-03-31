@@ -135,4 +135,21 @@ function CommentSection(props: CommentSectionProps) {
   );
 }
 
+function PostSmall(props: PostProps) {
+  const { post, author } = props;
+  return (
+    <div>
+      {post.imageUrl && (
+        <Image
+          src={post.imageUrl}
+          alt="Post Image"
+          className="rounded-lg"
+          width={400}
+          height={400}
+        />
+      )}
+    </div>
+  );
+}
+
 export default Post;
