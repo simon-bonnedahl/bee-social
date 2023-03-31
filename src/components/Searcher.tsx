@@ -26,7 +26,7 @@ function Searcher(props: SearcherProps) {
     <React.Fragment>
       <Sidebar.Item
         onClick={() => setVisible(true)}
-        classNameName=" text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+        className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
       >
         <div className="mt-2 flex items-center gap-5  ">
           <AiOutlineSearch className="h-8 w-8 " />
@@ -52,7 +52,7 @@ function Searcher(props: SearcherProps) {
             {data?.map((user) => (
               <Link
                 className="flex w-full gap-2  px-2 py-2 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300"
-                href="/"
+                href={`/${user.username}`}
               >
                 <Image
                   src={user.profileImageUrl}
