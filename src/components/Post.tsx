@@ -7,6 +7,9 @@ import { useUser } from "@clerk/nextjs";
 import { Spinner } from "@alfiejones/flowbite-react";
 import CreateComment from "./CreateComment";
 import Image from "next/image";
+import { postRouter } from "~/server/api/routers/post";
+import { BsChatFill } from "react-icons/bs";
+import Link from "next/link";
 dayjs.extend(relativeTime);
 
 type PostProps = RouterOutputs["post"]["getAll"][number];
@@ -138,17 +141,33 @@ function CommentSection(props: CommentSectionProps) {
 export function PostSmall(props: PostProps) {
   const { post, author } = props;
   return (
-    <div>
+    <Link href={`/post/${post.id}`}>
       {post.imageUrl && (
-        <Image
-          src={post.imageUrl}
-          alt="Post Image"
-          className="hover:opacity-70"
-          width={350}
-          height={350}
-        />
+        <div className="relative h-80 w-80 overflow-hidden">
+          <Image
+            src={post.imageUrl}
+            alt="Post Image"
+            width={325}
+            height={325}
+          />
+          {/*Overlay*/}
+          <div className="z-5 absolute inset-0 flex items-center justify-center gap-4 bg-black opacity-0 duration-500 ease-in-out hover:text-opacity-100 hover:opacity-40">
+            <div className="flex items-center gap-2">
+              <AiFillHeart className="h-6 w-6 text-white" />
+              <p className="text-2xl font-bold text-white">
+                {post.likes.length}
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <BsChatFill className="h-5 w-5  text-white" />
+              <p className="text-2xl font-bold text-white">
+                {post.comments.length}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+    </Link>
   );
 }
 

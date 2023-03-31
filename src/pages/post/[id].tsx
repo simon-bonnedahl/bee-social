@@ -5,9 +5,9 @@ import { api } from "~/utils/api";
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 import Post from "~/components/Post";
 
-const SinglePostPage: NextPage<{ id: number }> = ({ id }) => {
+const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
   const { data } = api.post.getById.useQuery({
-    id,
+    id: parseInt(id),
   });
   if (!data) return <div>404</div>;
 

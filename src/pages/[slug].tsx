@@ -80,7 +80,7 @@ const ProfileFeed = (props: { userId: string }) => {
   if (!data || data.length === 0) return <div>User has not posted</div>;
 
   return (
-    <div className="grid w-fit grid-cols-3">
+    <div className="grid w-fit grid-cols-3 px-8">
       {data.map(({ post, author }) => (
         <PostSmall post={post} author={author} key={post.id} />
       ))}
