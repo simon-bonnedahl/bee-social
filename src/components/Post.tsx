@@ -143,7 +143,7 @@ export function PostSmall(props: PostProps) {
   return (
     <Link href={`/post/${post.id}`} className="group">
       {post.imageUrl && (
-        <div className="relative h-80 w-80 overflow-hidden">
+        <div className="relative h-80 w-80 md:h-72  md:w-72">
           <Image
             src={post.imageUrl}
             alt="Post Image"

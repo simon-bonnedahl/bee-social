@@ -19,7 +19,10 @@ const Home: NextPage = () => {
 
         {user && (
           <>
-            <SideMenu profileImageUrl={user?.profileImageUrl ?? null} />
+            <SideMenu
+              profileImageUrl={user.profileImageUrl}
+              username={user.username ?? ""}
+            />
             <Feed />
           </>
         )}

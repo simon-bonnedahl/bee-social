@@ -1,5 +1,6 @@
 import { Sidebar, Spinner } from "@alfiejones/flowbite-react";
 import { SignOutButton } from "@clerk/nextjs";
+import { User } from "@clerk/nextjs/dist/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AiOutlineHome, AiOutlineSearch } from "react-icons/ai";
@@ -12,9 +13,9 @@ import Searcher from "./Searcher";
 import ThemeSwitch from "./ThemeSwitch";
 
 type SideMenuProps = {
-  profileImageUrl: string | null;
+  profileImageUrl: string;
+  username: string;
 };
-
 function SideMenu(props: SideMenuProps) {
   const BREAKPOINT_TABLET = 1048;
   const [width, setWidth] = useState<number | null>(null);
@@ -35,9 +36,9 @@ function SideMenu(props: SideMenuProps) {
   if (!width) return null;
 
   return width < BREAKPOINT_TABLET ? (
-    <SmallSideMenu profileImageUrl={props.profileImageUrl} />
+    <SmallSideMenu {...props} />
   ) : (
-    <LargeSideMenu profileImageUrl={props.profileImageUrl} />
+    <LargeSideMenu {...props} />
   );
 }
 
@@ -74,7 +75,7 @@ function LargeSideMenu(props: SideMenuProps) {
             </Sidebar.Item>
             <CreatePost width="full" />
             <Sidebar.Item
-              href="/profile"
+              href={"/" + props.username}
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
@@ -150,7 +151,7 @@ function SmallSideMenu(props: SideMenuProps) {
             </Sidebar.Item>
             <CreatePost />
             <Sidebar.Item
-              href="/profile"
+              href={"/" + props.username}
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
@@ -193,33 +194,4 @@ function SmallSideMenu(props: SideMenuProps) {
   );
 }
 
-const useWindowDimensions = () => {
-  const hasWindow = typeof window !== "undefined";
-
-  function getWindowDimensions() {
-    const width = hasWindow ? window.innerWidth : null;
-    const height = hasWindow ? window.innerHeight : null;
-    return {
-      width,
-      height,
-    };
-  }
-
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-
-  useEffect(() => {
-    if (hasWindow) {
-      function handleResize() {
-        setWindowDimensions(getWindowDimensions());
-      }
-
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, [hasWindow]);
-
-  return windowDimensions;
-};
-export { useWindowDimensions, SideMenu };
+export { SideMenu };
