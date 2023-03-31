@@ -135,7 +135,7 @@ function CommentSection(props: CommentSectionProps) {
   );
 }
 
-function PostSmall(props: PostProps) {
+export function PostSmall(props: PostProps) {
   const { post, author } = props;
   return (
     <div>
@@ -143,9 +143,9 @@ function PostSmall(props: PostProps) {
         <Image
           src={post.imageUrl}
           alt="Post Image"
-          className="rounded-lg"
-          width={400}
-          height={400}
+          className="hover:opacity-70"
+          width={350}
+          height={350}
         />
       )}
     </div>

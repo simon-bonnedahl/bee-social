@@ -3,7 +3,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import Image from "next/image";
 import { Button, Spinner } from "flowbite-react";
-import Post from "~/components/Post";
+import Post, { PostSmall } from "~/components/Post";
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { SideMenu } from "~/components/SideMenu";
@@ -80,9 +80,9 @@ const ProfileFeed = (props: { userId: string }) => {
   if (!data || data.length === 0) return <div>User has not posted</div>;
 
   return (
-    <div className="flex flex-col">
+    <div className="grid w-fit grid-cols-3">
       {data.map(({ post, author }) => (
-        <Post post={post} author={author} key={post.id} />
+        <PostSmall post={post} author={author} key={post.id} />
       ))}
     </div>
   );

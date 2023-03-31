@@ -54,7 +54,7 @@ function LargeSideMenu(props: SideMenuProps) {
         <Sidebar.Items className="mt-8">
           <Sidebar.ItemGroup>
             <Sidebar.Item
-              href="#"
+              href="/"
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
@@ -132,7 +132,7 @@ function SmallSideMenu(props: SideMenuProps) {
         <Sidebar.Items className="mt-8">
           <Sidebar.ItemGroup>
             <Sidebar.Item
-              href="#"
+              href="/"
               className=" w-fit text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
