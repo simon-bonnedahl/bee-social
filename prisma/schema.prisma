@@ -44,3 +44,11 @@ model Comment {
 
     @@index([postId])
 }
+
+model Follow {
+    id          Int      @id @default(autoincrement())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    followerId  String
+    followingId String
+}

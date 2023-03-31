@@ -1,6 +1,6 @@
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
-import { api } from "~/utils/api";
+import { api, RouterOutputs } from "~/utils/api";
 import Image from "next/image";
 import { Button, Spinner } from "flowbite-react";
 import Post, { PostSmall } from "~/components/Post";
@@ -10,8 +10,25 @@ import { SideMenu } from "~/components/SideMenu";
 import Feed from "~/components/Feed";
 import { User } from "@clerk/nextjs/dist/api";
 import { BsThreeDots } from "react-icons/bs";
+import { toast } from "react-hot-toast";
 
-const ProfileBio = (user: any) => {
+type ProfileBioProps = RouterOutputs["user"]["getProfileData"];
+
+const ProfileBio = (user: ProfileBioProps) => {
+  const { mutate, isLoading: isFollowing } = api.user.follow.useMutation({
+    onSuccess: () => {
+      toast.success("Followed");
+    },
+    onError: (e: any) => {
+      console.log(e);
+      toast.error("Something went wrong");
+    },
+  });
+  if (!user) return <Spinner color="warning" />;
+
+  const onFollow = () => {
+    mutate({ userId: user.id });
+  };
   return (
     //Bio like instagram
     <div className="w-fill flex items-center ">
@@ -32,8 +49,11 @@ const ProfileBio = (user: any) => {
             @{user.username}
           </span>
           <div className="flex gap-2">
-            <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
-              Follow
+            <Button
+              onClick={onFollow}
+              className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
+            >
+              {isFollowing ? <Spinner color="warning" /> : <span>Follow</span>}
             </Button>
             <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
               Message
@@ -47,13 +67,13 @@ const ProfileBio = (user: any) => {
         {/*Stats*/}
         <div className="flex gap-6  py-2 text-lg">
           <div>
-            <span className="font-semibold">100 </span>posts
+            <span className="font-semibold">{user.posts} </span>posts
           </div>
           <div>
-            <span className="font-semibold">100 </span>followers
+            <span className="font-semibold">{user.followers} </span>followers
           </div>
           <div>
-            <span className="font-semibold">100 </span>following
+            <span className="font-semibold">{user.following} </span>following
           </div>
         </div>
 
@@ -89,9 +109,10 @@ const ProfileFeed = (props: { userId: string }) => {
 };
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data } = api.user.getByUsername.useQuery({
+  const { data } = api.user.getProfileData.useQuery({
     username,
   });
+
   const { user } = useUser();
   if (!data) return <div>404</div>;
   return (
