@@ -1,9 +1,10 @@
 import { Sidebar, Spinner } from "@alfiejones/flowbite-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/dist/api";
+import { Tooltip } from "flowbite-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { AiOutlineHome, AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineBell, AiFillHome } from "react-icons/ai";
 import { IoPaperPlaneOutline, IoSettingsOutline } from "react-icons/io5";
 import { VscSignOut } from "react-icons/vsc";
 import CreatePost from "./CreatePost";
@@ -15,6 +16,7 @@ import ThemeSwitch from "./ThemeSwitch";
 type SideMenuProps = {
   profileImageUrl: string;
   username: string;
+  highlight: string;
 };
 function SideMenu(props: SideMenuProps) {
   const BREAKPOINT_TABLET = 1048;
@@ -59,7 +61,11 @@ function LargeSideMenu(props: SideMenuProps) {
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
-                <AiOutlineHome className="h-8 w-8" />
+                {props.highlight === "home" ? (
+                  <AiFillHome className="h-8 w-8" />
+                ) : (
+                  <AiOutlineHome className="h-8 w-8" />
+                )}
                 Home
               </div>
             </Sidebar.Item>
@@ -73,12 +79,25 @@ function LargeSideMenu(props: SideMenuProps) {
                 Messages
               </div>
             </Sidebar.Item>
+            <Sidebar.Item
+              href="#"
+              className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <div className="mt-2 flex items-center gap-5  ">
+                <AiOutlineBell className="h-8 w-8" />
+                Notifications
+              </div>
+            </Sidebar.Item>
+
             <CreatePost width="full" />
             <Sidebar.Item
               href={"/" + props.username}
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
-              <div className="mt-2 flex items-center gap-5  ">
+              <div className="relative mt-2 flex items-center  gap-5">
+                {props.highlight === "profile" && (
+                  <div className="z-5 absolute inset-0 flex h-8 w-8 scale-125 items-center justify-center rounded-full border-2 border-black bg-transparent"></div>
+                )}
                 {props.profileImageUrl ? (
                   <Image
                     className="h-8 w-8 rounded-full"
@@ -136,57 +155,86 @@ function SmallSideMenu(props: SideMenuProps) {
               href="/"
               className=" w-fit text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
-              <div className="mt-2 flex items-center gap-5  ">
-                <AiOutlineHome className="h-8 w-8" />
-              </div>
+              <Tooltip content="Home">
+                <div className="mt-2 flex items-center gap-5  ">
+                  {props.highlight === "home" ? (
+                    <AiFillHome className="h-8 w-8" />
+                  ) : (
+                    <AiOutlineHome className="h-8 w-8" />
+                  )}
+                </div>
+              </Tooltip>
             </Sidebar.Item>
-            <Searcher />
+            <Tooltip content="Search">
+              <Searcher />
+            </Tooltip>
             <Sidebar.Item
               href="#"
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
-              <div className="mt-2 flex items-center gap-5  ">
-                <IoPaperPlaneOutline className="h-8 w-8" />
-              </div>
+              <Tooltip content="Messages">
+                <div className="mt-2 flex items-center gap-5  ">
+                  <IoPaperPlaneOutline className="h-8 w-8" />
+                </div>
+              </Tooltip>
             </Sidebar.Item>
-            <CreatePost />
+            <Sidebar.Item
+              href="#"
+              className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+            >
+              <Tooltip content="Notifications">
+                <div className="mt-2 flex items-center gap-5  ">
+                  <AiOutlineBell className="h-8 w-8" />
+                </div>
+              </Tooltip>
+            </Sidebar.Item>
+            <Tooltip content="Create Post">
+              <CreatePost />
+            </Tooltip>
             <Sidebar.Item
               href={"/" + props.username}
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
-              <div className="mt-2 flex items-center gap-5  ">
-                {props.profileImageUrl ? (
-                  <Image
-                    className="h-8 w-8 rounded-full"
-                    src={props.profileImageUrl}
-                    alt="Profile Picture"
-                    width={35}
-                    height={35}
-                  />
-                ) : (
-                  <Spinner color="warning" />
-                )}
-              </div>
+              <Tooltip content="Profile">
+                <div className="mt-2 flex items-center gap-5  ">
+                  {props.profileImageUrl ? (
+                    <Image
+                      className="h-8 w-8 rounded-full"
+                      src={props.profileImageUrl}
+                      alt="Profile Picture"
+                      width={35}
+                      height={35}
+                    />
+                  ) : (
+                    <Spinner color="warning" />
+                  )}
+                </div>
+              </Tooltip>
             </Sidebar.Item>
           </Sidebar.ItemGroup>
           <Sidebar.ItemGroup>
-            <Sidebar.Item
-              href="#"
-              className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-            >
-              <div className="mt-2 flex items-center gap-5  ">
-                <IoSettingsOutline className="h-8 w-8 " />
-              </div>
-            </Sidebar.Item>
-            <ThemeSwitch />
-            <Sidebar.Item className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold">
-              <SignOutButton>
+            <Tooltip content="Settings">
+              <Sidebar.Item
+                href="#"
+                className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
+              >
                 <div className="mt-2 flex items-center gap-5  ">
-                  <VscSignOut className="h-8 w-8 " />
+                  <IoSettingsOutline className="h-8 w-8 " />
                 </div>
-              </SignOutButton>
+              </Sidebar.Item>
+            </Tooltip>
+            <Tooltip content="Switch theme">
+              <ThemeSwitch />
+            </Tooltip>
+            <Sidebar.Item className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold">
+              <Tooltip content="Sign out">
+                <SignOutButton>
+                  <div className="mt-2 flex items-center gap-5  ">
+                    <VscSignOut className="h-8 w-8 " />
+                  </div>
+                </SignOutButton>
+              </Tooltip>
             </Sidebar.Item>
-            <Searcher />
           </Sidebar.ItemGroup>
         </Sidebar.Items>
       </Sidebar>

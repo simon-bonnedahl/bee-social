@@ -22,6 +22,7 @@ const Home: NextPage = () => {
             <SideMenu
               profileImageUrl={user.profileImageUrl}
               username={user.username ?? ""}
+              highlight="home"
             />
             <Feed />
           </>

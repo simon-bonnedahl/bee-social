@@ -47,20 +47,30 @@ const ProfileBio = (user: ProfileBioProps) => {
         {/*Top*/}
         <div className="flex items-center gap-6 py-2">
           <span className="text-lg font-semibold">@{user.username}</span>
-          <div className="flex gap-2">
-            <Button
-              onClick={onFollow}
-              className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
-            >
-              {isFollowing ? <Spinner color="warning" /> : <span>Follow</span>}
-            </Button>
+          {user.id === useUser().user?.id ? (
             <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
-              Message
+              Edit profile
             </Button>
-            <button className="px-1">
-              <BsThreeDots className="h-8 w-8" />
-            </button>
-          </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                onClick={onFollow}
+                className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
+              >
+                {isFollowing ? (
+                  <Spinner color="warning" />
+                ) : (
+                  <span>Follow</span>
+                )}
+              </Button>
+              <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
+                Message
+              </Button>
+              <button className="px-1">
+                <BsThreeDots className="h-8 w-8" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/*Stats*/}
@@ -100,7 +110,7 @@ const ProfileFeed = (props: { userId: string }) => {
   if (!data || data.length === 0) return <div>User has not posted</div>;
 
   return (
-    <div className="grid w-fit grid-cols-3 px-8 md:px-0">
+    <div className="grid w-fit grid-cols-3 gap-1 px-8 md:px-0">
       {data.map(({ post, author }) => (
         <PostSmall post={post} author={author} key={post.id} />
       ))}
@@ -129,6 +139,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <SideMenu
               profileImageUrl={user.profileImageUrl ?? null}
               username={user.username ?? ""}
+              highlight="profile"
             />
           </>
         )}
