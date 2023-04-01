@@ -18,7 +18,7 @@ const ProfileBio = (user: ProfileBioProps) => {
   const { user: me } = useUser();
 
   const { data: isFollowing } = api.user.isFollowing.useQuery({
-    userId: user?.id!,
+    userId: user?.id ?? "",
   });
 
   const { mutate: follow, isLoading: loadingFollow } =
