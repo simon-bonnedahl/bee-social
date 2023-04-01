@@ -1,6 +1,6 @@
 import { UserProfile } from "@clerk/nextjs";
 
-const Profile = () => {
+const Settings = () => {
   return <UserProfile />;
 };
-export default Profile;
+export default Settings;

@@ -54,3 +54,15 @@ model Follow {
 
     @@unique([followerId, followingId])
 }
+
+model Message {
+    id         Int      @id @default(autoincrement())
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    content    String
+    senderId   String
+    receiverId String
+    read       Boolean  @default(false)
+
+    @@index([senderId, receiverId])
+}

@@ -55,7 +55,6 @@ const ProfileBio = (user: ProfileBioProps) => {
     } else follow({ userId: user.id });
   };
   return (
-    //Bio like instagram
     <div className="w-fill mt-4 flex items-center ">
       <div className=" py-12 px-24 md:px-12 md:py-6">
         <Image
@@ -70,7 +69,7 @@ const ProfileBio = (user: ProfileBioProps) => {
       <div className="flex h-full flex-col justify-around dark:text-white ">
         {/*Top*/}
         <div className="flex items-center gap-6 py-2">
-          <span className="text-lg font-semibold">@{user.username}</span>
+          <span className="text-lg font-semibold">{user.username}</span>
           {user.id === me?.id ? (
             <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
               Edit profile
@@ -163,15 +162,15 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <SideMenu
               profileImageUrl={user.profileImageUrl ?? null}
               username={user.username ?? ""}
-              highlight="profile"
+              highlight={username === user.username ? "profile" : "none"}
             />
+            <div className="ml-64 flex min-h-screen flex-col gap-8 lg:ml-24">
+              <ProfileBio {...data} />
+              <div className="h-0.5 w-full border-b border-gray-300"></div>
+              <ProfileFeed userId={data.id} />
+            </div>
           </>
         )}
-        <div className="ml-64 flex min-h-screen flex-col gap-8 lg:ml-24">
-          <ProfileBio {...data} />
-          <div className="h-0.5 w-full border-b border-gray-300"></div>
-          <ProfileFeed userId={data.id} />
-        </div>
       </main>
     </>
   );

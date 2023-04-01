@@ -9,7 +9,11 @@ const config = {
   reactStrictMode: true,
 
   images: {
-    domains: ["images.clerk.dev", "beesocialstorage.blob.core.windows.net"],
+    domains: [
+      "images.clerk.dev",
+      "beesocialstorage.blob.core.windows.net",
+      "www.gravatar.com",
+    ],
   },
 
   /**

@@ -33,18 +33,22 @@ function Post(props: PostProps) {
   };
 
   return (
-    <div className="rounded-lg bg-white p-8 shadow-xl dark:bg-gray-800">
+    <div className="bg-white p-8  dark:bg-gray-800">
       <div className="flex items-center gap-x-4">
-        <Image
-          src={author.profileImageUrl}
-          alt="Profile Picture"
-          className="h-12 w-12 rounded-full"
-          width={40}
-          height={40}
-        />
+        <Link className="hover:cursor-pointer" href={"/" + author.username}>
+          <Image
+            src={author.profileImageUrl}
+            alt="Profile Picture"
+            className="h-12 w-12 rounded-full"
+            width={40}
+            height={40}
+          />
+        </Link>
         <div className="flex flex-col">
           <span className="text-sm font-semibold dark:text-white">
-            @{author.username}
+            <Link className="hover:cursor-pointer" href={"/" + author.username}>
+              {author.username}
+            </Link>
             <span className="text-xs text-gray-500 dark:text-gray-300">
               {" · "}
               {dayjs(post.createdAt).fromNow()}
@@ -107,18 +111,29 @@ function CommentSection(props: CommentSectionProps) {
           return (
             <div className="flex w-full items-center gap-x-4" key={comment.id}>
               {user.profileImageUrl && (
-                <Image
-                  src={user.profileImageUrl}
-                  alt="Profile Picture"
-                  className="h-10 w-10 rounded-full"
-                  width={40}
-                  height={40}
-                />
+                <Link
+                  className="hover:cursor-pointer"
+                  href={"/" + user.username}
+                >
+                  <Image
+                    src={user.profileImageUrl}
+                    alt="Profile Picture"
+                    className="h-10 w-10 rounded-full"
+                    width={40}
+                    height={40}
+                  />
+                </Link>
               )}
 
               <div className="flex flex-col">
                 <span className="text-xs font-semibold dark:text-white">
-                  @{user.username}
+                  <Link
+                    className="hover:cursor-pointer"
+                    href={"/" + user.username}
+                  >
+                    {user.username}
+                  </Link>
+
                   <span className="text-xs text-gray-500 dark:text-gray-300">
                     {" · "}
                     {dayjs(comment.createdAt).fromNow()}

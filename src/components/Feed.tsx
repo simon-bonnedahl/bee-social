@@ -12,7 +12,7 @@ function Feed() {
   if (!data) return <div>Something went wrong</div>;
 
   return (
-    <div className="my-10 flex flex-col items-center gap-6">
+    <div className="my-10 flex flex-col items-center gap-6 divide-y-2 ">
       {[...data].map(({ post, author }) => (
         <Post post={post} author={author} key={post.id} />
       ))}

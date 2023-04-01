@@ -4,7 +4,11 @@ import { Tooltip } from "flowbite-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AiOutlineHome, AiOutlineBell, AiFillHome } from "react-icons/ai";
-import { IoPaperPlaneOutline, IoSettingsOutline } from "react-icons/io5";
+import {
+  IoPaperPlaneOutline,
+  IoSettingsOutline,
+  IoPaperPlane,
+} from "react-icons/io5";
 import { VscSignOut } from "react-icons/vsc";
 import CreatePost from "./CreatePost";
 
@@ -70,11 +74,15 @@ function LargeSideMenu(props: SideMenuProps) {
             </Sidebar.Item>
             <Searcher width="full" />
             <Sidebar.Item
-              href="#"
+              href="/messages/inbox"
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
-                <IoPaperPlaneOutline className="h-8 w-8" />
+                {props.highlight === "messages" ? (
+                  <IoPaperPlane className="h-8 w-8" />
+                ) : (
+                  <IoPaperPlaneOutline className="h-8 w-8" />
+                )}
                 Messages
               </div>
             </Sidebar.Item>
@@ -114,7 +122,7 @@ function LargeSideMenu(props: SideMenuProps) {
           </Sidebar.ItemGroup>
           <Sidebar.ItemGroup>
             <Sidebar.Item
-              href="#"
+              href="/settings"
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
@@ -168,12 +176,16 @@ function SmallSideMenu(props: SideMenuProps) {
               <Searcher />
             </Tooltip>
             <Sidebar.Item
-              href="#"
+              href="/messages/inbox"
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <Tooltip content="Messages">
                 <div className="mt-2 flex items-center gap-5  ">
-                  <IoPaperPlaneOutline className="h-8 w-8" />
+                  {props.highlight === "messages" ? (
+                    <IoPaperPlane className="h-8 w-8" />
+                  ) : (
+                    <IoPaperPlaneOutline className="h-8 w-8" />
+                  )}
                 </div>
               </Tooltip>
             </Sidebar.Item>
@@ -214,7 +226,7 @@ function SmallSideMenu(props: SideMenuProps) {
           <Sidebar.ItemGroup>
             <Tooltip content="Settings">
               <Sidebar.Item
-                href="#"
+                href="/settings"
                 className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
               >
                 <div className="mt-2 flex items-center gap-5  ">
