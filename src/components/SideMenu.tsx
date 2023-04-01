@@ -1,6 +1,5 @@
 import { Sidebar, Spinner } from "@alfiejones/flowbite-react";
 import { SignOutButton } from "@clerk/nextjs";
-import { User } from "@clerk/nextjs/dist/api";
 import { Tooltip } from "flowbite-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";

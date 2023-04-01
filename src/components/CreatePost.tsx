@@ -85,7 +85,9 @@ function CreatePost(props: CreatePostProps) {
           )}
           {page === 2 && (
             <div className="flex gap-4">
-              {preview && <img src={preview} />}
+              {preview && (
+                <Image src={preview} alt="preview" width={450} height={450} />
+              )}
 
               <WriteContent content={content} setContent={setContent} />
             </div>
@@ -143,7 +145,7 @@ function DragAndDropImage(props: DragAndDropImageProps) {
     <>
       {props.preview && (
         <div className="flex flex-col items-center gap-2">
-          <img src={props.preview} alt="preview" />
+          <Image src={props.preview} alt="preview" width={450} height={450} />
           <button onClick={() => props.setPreview(null)}>Remove</button>
         </div>
       )}

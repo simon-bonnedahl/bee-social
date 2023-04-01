@@ -7,7 +7,6 @@ import { useUser } from "@clerk/nextjs";
 import { Spinner } from "@alfiejones/flowbite-react";
 import CreateComment from "./CreateComment";
 import Image from "next/image";
-import { postRouter } from "~/server/api/routers/post";
 import { BsChatFill } from "react-icons/bs";
 import Link from "next/link";
 dayjs.extend(relativeTime);

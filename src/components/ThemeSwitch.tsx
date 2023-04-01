@@ -1,10 +1,5 @@
-import { useUser } from "@clerk/nextjs";
 import { Sidebar } from "@alfiejones/flowbite-react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { FileUploader } from "react-drag-drop-files";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import Resizer from "react-image-file-resizer";
+import { useState } from "react";
 import { BsMoon, BsSun } from "react-icons/bs";
 
 type ThemeSwitchProps = {

@@ -52,7 +52,8 @@ function Searcher(props: SearcherProps) {
             {data?.map((user) => (
               <Link
                 className="flex w-full gap-2  px-2 py-2 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300"
-                href={`/${user.username}`}
+                href={`/${user.username ?? ""}`}
+                key={user.id}
               >
                 <Image
                   src={user.profileImageUrl}
@@ -71,7 +72,7 @@ function Searcher(props: SearcherProps) {
   );
 }
 
-function InputField(props: any) {
+function InputField(props: { onSearch: (search: string) => void }) {
   const [search, setSearch] = React.useState("");
 
   return (
