@@ -15,6 +15,8 @@ type ProfileBioProps = RouterOutputs["user"]["getProfileData"];
 const ProfileBio = (user: ProfileBioProps) => {
   const ctx = api.useContext();
 
+  const { user: me } = useUser();
+
   const { mutate, isLoading: isFollowing } = api.user.follow.useMutation({
     onSuccess: () => {
       toast.success("Followed");
@@ -47,7 +49,7 @@ const ProfileBio = (user: ProfileBioProps) => {
         {/*Top*/}
         <div className="flex items-center gap-6 py-2">
           <span className="text-lg font-semibold">@{user.username}</span>
-          {user.id === useUser().user?.id ? (
+          {user.id === me?.id ? (
             <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
               Edit profile
             </Button>
