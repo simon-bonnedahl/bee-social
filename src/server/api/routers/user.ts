@@ -6,7 +6,7 @@ const filterUserForClient = (user: User) => ({
   id: user.id,
   username: user.username,
   profileImageUrl: user.profileImageUrl,
-  fullName: `${user.firstName} ${user.lastName}`,
+  fullName: `${user.firstName ?? "Not"} ${user.lastName ?? "Found"}`,
 });
 
 export const userRouter = createTRPCRouter({
@@ -126,7 +126,7 @@ export const userRouter = createTRPCRouter({
         followers,
         following,
         posts,
-        fullName: `${user.firstName} ${user.lastName}`,
+        fullName: `${user.firstName ?? "Not"} ${user.lastName ?? "Found"}`,
       };
     }),
   isFollowing: privateProcedure
