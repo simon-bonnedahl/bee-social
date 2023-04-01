@@ -1,13 +1,12 @@
 import clerkClient, { User } from "@clerk/clerk-sdk-node";
 import { z } from "zod";
-import { prisma } from "~/server/db";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "../trpc";
 
 const filterUserForClient = (user: User) => ({
   id: user.id,
   username: user.username,
   profileImageUrl: user.profileImageUrl,
-  fullName: user.firstName + " " + user.lastName,
+  fullName: `${user.firstName} ${user.lastName}`,
 });
 
 export const userRouter = createTRPCRouter({
@@ -58,7 +57,16 @@ export const userRouter = createTRPCRouter({
       const followerId = ctx.userId;
       if (!followerId) return null;
 
-      return null;
+      const follow = await ctx.prisma.follow.delete({
+        where: {
+          followerId_followingId: {
+            followerId,
+            followingId,
+          },
+        },
+      });
+
+      return follow;
     }),
   getFollowers: publicProcedure
     .input(z.object({ userId: z.string() }))
@@ -118,7 +126,26 @@ export const userRouter = createTRPCRouter({
         followers,
         following,
         posts,
-        fullName: user.firstName + " " + user.lastName,
+        fullName: `${user.firstName} ${user.lastName}`,
       };
+    }),
+  isFollowing: privateProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const followingId = input.userId;
+      const followerId = ctx.userId;
+      if (!followerId) return null;
+
+      const follow = await ctx.prisma.follow.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId,
+            followingId,
+          },
+        },
+      });
+      console.log(follow);
+      if (follow) return true;
+      return false;
     }),
 });

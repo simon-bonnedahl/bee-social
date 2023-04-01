@@ -51,4 +51,6 @@ model Follow {
     updatedAt   DateTime @updatedAt
     followerId  String
     followingId String
+
+    @@unique([followerId, followingId])
 }

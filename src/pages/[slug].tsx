@@ -17,20 +17,42 @@ const ProfileBio = (user: ProfileBioProps) => {
 
   const { user: me } = useUser();
 
-  const { mutate, isLoading: isFollowing } = api.user.follow.useMutation({
-    onSuccess: () => {
-      toast.success("Followed");
-      void ctx.user.getProfileData.invalidate();
-    },
-    onError: (e: any) => {
-      console.log(e);
-      toast.error("Something went wrong");
-    },
+  const { data: isFollowing } = api.user.isFollowing.useQuery({
+    userId: user?.id!,
   });
+
+  const { mutate: follow, isLoading: loadingFollow } =
+    api.user.follow.useMutation({
+      onSuccess: () => {
+        toast.success("Followed");
+        void ctx.user.getProfileData.invalidate();
+        void ctx.user.isFollowing.invalidate();
+      },
+      onError: (e: any) => {
+        console.log(e);
+        toast.error("Something went wrong");
+      },
+    });
+
+  const { mutate: unfollow, isLoading: loadingUnfollow } =
+    api.user.unfollow.useMutation({
+      onSuccess: () => {
+        toast.success("Unfollowed");
+        void ctx.user.getProfileData.invalidate();
+        void ctx.user.isFollowing.invalidate();
+      },
+      onError: (e: any) => {
+        console.log(e);
+        toast.error("Something went wrong");
+      },
+    });
+
   if (!user) return <Spinner color="warning" />;
 
   const onFollow = () => {
-    mutate({ userId: user.id });
+    if (isFollowing) {
+      unfollow({ userId: user.id });
+    } else follow({ userId: user.id });
   };
   return (
     //Bio like instagram
@@ -59,10 +81,10 @@ const ProfileBio = (user: ProfileBioProps) => {
                 onClick={onFollow}
                 className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
               >
-                {isFollowing ? (
+                {loadingFollow || loadingUnfollow ? (
                   <Spinner color="warning" />
                 ) : (
-                  <span>Follow</span>
+                  <span>{isFollowing ? "Unfollow" : "Follow"}</span>
                 )}
               </Button>
               <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
