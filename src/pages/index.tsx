@@ -2,7 +2,7 @@ import { SignIn, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Feed from "~/components/Feed";
-import { SideMenu } from "~/components/SideMenu";
+import Menu from "~/components/Menu";
 
 const Home: NextPage = () => {
   const { user } = useUser();
@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 
         {user && (
           <>
-            <SideMenu
+            <Menu
               profileImageUrl={user.profileImageUrl}
               username={user.username ?? ""}
               highlight="home"

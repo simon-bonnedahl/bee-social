@@ -4,7 +4,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
-import { SideMenu } from "~/components/SideMenu";
+import Menu from "~/components/Menu";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { IoCreateOutline } from "react-icons/io5";
 import { Spinner } from "flowbite-react";
@@ -27,7 +27,7 @@ const SinglePostPage: NextPage<{ username: string }> = ({ username }) => {
 
         {user && (
           <>
-            <SideMenu
+            <Menu
               profileImageUrl={user.profileImageUrl ?? null}
               username={user.username ?? ""}
               highlight="messages"

@@ -6,7 +6,7 @@ import { Button, Spinner } from "flowbite-react";
 import { PostSmall } from "~/components/Post";
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 import { SignIn, useUser } from "@clerk/nextjs";
-import { SideMenu } from "~/components/SideMenu";
+import Menu from "~/components/Menu";
 import { BsThreeDots } from "react-icons/bs";
 import { toast } from "react-hot-toast";
 
@@ -157,17 +157,17 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <Head>
         <title>{data.username}</title>
       </Head>
-      <main className="flex min-h-screen items-center justify-center">
+      <main className="relative flex min-h-screen items-center justify-center">
         {!user && <SignIn />}
 
         {user && (
           <>
-            <SideMenu
+            <Menu
               profileImageUrl={user.profileImageUrl ?? null}
               username={user.username ?? ""}
               highlight={username === user.username ? "profile" : "none"}
             />
-            <div className="ml-64 flex min-h-screen flex-col gap-8 lg:ml-24">
+            <div className="flex min-h-screen flex-col gap-8 lg:ml-24 xl:ml-64">
               <ProfileBio {...data} />
               <div className="h-0.5 w-full border-b border-gray-300"></div>
               <ProfileFeed userId={data.id} />

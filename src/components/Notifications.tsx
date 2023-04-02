@@ -49,7 +49,7 @@ const Drawer = (props: DrawerProps) => {
   return (
     <main
       className={
-        " fixed inset-0 top-0 left-0 z-10 transform overflow-hidden bg-gray-900 bg-opacity-25 ease-in-out " +
+        " fixed inset-0 top-0 left-0 z-50 transform overflow-hidden bg-gray-900 bg-opacity-25 ease-in-out " +
         (props.isOpen
           ? " translate-x-0 opacity-100 transition-opacity duration-500  "
           : " -translate-x-full opacity-0 transition-all delay-500  ")

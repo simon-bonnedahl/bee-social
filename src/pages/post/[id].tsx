@@ -4,7 +4,7 @@ import { api } from "~/utils/api";
 
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 import Post from "~/components/Post";
-import { SideMenu } from "~/components/SideMenu";
+import Menu from "~/components/Menu";
 import { SignIn, useUser } from "@clerk/nextjs";
 
 const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
@@ -12,6 +12,7 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
     id: parseInt(id),
   });
   const { user } = useUser();
+
   if (!data) return <div>404</div>;
 
   return (
@@ -23,7 +24,7 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
       <main className="flex min-h-screen items-center justify-center">
         {user && (
           <>
-            <SideMenu
+            <Menu
               profileImageUrl={user.profileImageUrl ?? null}
               username={user.username ?? ""}
             />
