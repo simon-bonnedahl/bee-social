@@ -204,9 +204,7 @@ const ChatList = (props: ChatListProps) => {
       {chats.map((chat) => (
         <button
           className={`flex w-full gap-2 p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
-            props.selected && chat.username && props.selected === chat.username
-              ? "bg-gray-300"
-              : "bg-white"
+            props.selected === chat.username ? "bg-gray-300" : "bg-white"
           }`}
           onClick={() => onSelect(chat.username ?? "")}
           key={chat.id}
