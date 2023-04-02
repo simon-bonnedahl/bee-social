@@ -100,7 +100,6 @@ const FollowNotification = ({
   notification,
   user,
 }: RouterOutputs["user"]["getNotifications"][number]) => {
-  const router = useRouter();
   return (
     <Link
       className="flex w-full items-center justify-between hover:cursor-pointer"
@@ -133,11 +132,10 @@ const LikeNotification = ({
   notification,
   user,
 }: RouterOutputs["user"]["getNotifications"][number]) => {
-  const router = useRouter();
   return (
     <Link
       className="flex w-full items-center justify-between hover:cursor-pointer"
-      href={`/post/${notification.postId}`}
+      href={`/post/${notification.postId ?? ""}`}
     >
       <div className="flex items-center space-x-2">
         <Image
@@ -166,12 +164,10 @@ const CommentNotification = ({
   notification,
   user,
 }: RouterOutputs["user"]["getNotifications"][number]) => {
-  const router = useRouter();
-
   return (
     <Link
       className="flex w-full items-center justify-between hover:cursor-pointer"
-      href={`/post/${notification.postId}`}
+      href={`/post/${notification.postId ?? ""}`}
     >
       <div className="flex items-center space-x-2">
         <Image
