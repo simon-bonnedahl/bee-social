@@ -41,8 +41,8 @@ export const messageRouter = createTRPCRouter({
 
     const chats = [];
 
-    for (let userId of userIds) {
-      for (let user of users) {
+    for (const userId of userIds) {
+      for (const user of users) {
         if (user.id === userId) {
           chats.push(user);
         }

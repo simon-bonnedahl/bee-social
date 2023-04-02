@@ -1,7 +1,6 @@
 import { Sidebar } from "@alfiejones/flowbite-react";
 import { Modal, Spinner } from "flowbite-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -26,8 +25,8 @@ function Searcher(props: SearcherProps) {
   };
 
   const onRoute = (username: string) => {
-    router.push("/" + username);
     setVisible(false);
+    router.push("/" + username).catch((e) => console.log(e));
   };
 
   return (

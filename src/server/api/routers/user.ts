@@ -19,7 +19,7 @@ export const userRouter = createTRPCRouter({
   }),
   getBySearch: publicProcedure
     .input(z.object({ search: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const users = await clerkClient.users.getUserList({
         limit: 10,
         query: input.search,
@@ -28,7 +28,7 @@ export const userRouter = createTRPCRouter({
     }),
   getByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       const [user] = await clerkClient.users.getUserList({
         username: [input.username],
       });
