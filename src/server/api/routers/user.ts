@@ -148,4 +148,15 @@ export const userRouter = createTRPCRouter({
       if (follow) return true;
       return false;
     }),
+  getNotifications: privateProcedure.query(async ({ ctx }) => {
+    const notifications = await ctx.prisma.notification.findMany({
+      where: {
+        userId: ctx.userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return notifications;
+  }),
 });

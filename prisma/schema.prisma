@@ -66,3 +66,16 @@ model Message {
 
     @@index([senderId, receiverId])
 }
+
+model Notification {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    type      String
+    userId    String
+    postId    Int?
+    commentId Int?
+    read      Boolean  @default(false)
+
+    @@index([userId])
+}

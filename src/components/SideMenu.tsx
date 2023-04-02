@@ -13,6 +13,7 @@ import { VscSignOut } from "react-icons/vsc";
 import CreatePost from "./CreatePost";
 
 import Logo from "./Logo";
+import Notifications from "./Notifications";
 import Searcher from "./Searcher";
 import ThemeSwitch from "./ThemeSwitch";
 
@@ -86,15 +87,7 @@ function LargeSideMenu(props: SideMenuProps) {
                 Messages
               </div>
             </Sidebar.Item>
-            <Sidebar.Item
-              href="#"
-              className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-            >
-              <div className="mt-2 flex items-center gap-5  ">
-                <AiOutlineBell className="h-8 w-8" />
-                Notifications
-              </div>
-            </Sidebar.Item>
+            <Notifications width="full" />
 
             <CreatePost width="full" />
             <Sidebar.Item
@@ -189,16 +182,9 @@ function SmallSideMenu(props: SideMenuProps) {
                 </div>
               </Tooltip>
             </Sidebar.Item>
-            <Sidebar.Item
-              href="#"
-              className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
-            >
-              <Tooltip content="Notifications">
-                <div className="mt-2 flex items-center gap-5  ">
-                  <AiOutlineBell className="h-8 w-8" />
-                </div>
-              </Tooltip>
-            </Sidebar.Item>
+            <Tooltip content="Notifications">
+              <Notifications />
+            </Tooltip>
             <Tooltip content="Create Post">
               <CreatePost />
             </Tooltip>

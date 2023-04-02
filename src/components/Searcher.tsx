@@ -2,6 +2,7 @@ import { Sidebar } from "@alfiejones/flowbite-react";
 import { Modal, Spinner } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { api } from "~/utils/api";
@@ -18,8 +19,15 @@ function Searcher(props: SearcherProps) {
     search,
   });
 
+  const router = useRouter();
+
   const onSearch = (search: string) => {
     setSearch(search);
+  };
+
+  const onRoute = (username: string) => {
+    router.push("/" + username);
+    setVisible(false);
   };
 
   return (
@@ -46,13 +54,17 @@ function Searcher(props: SearcherProps) {
           </div>
         </Modal.Header>
         <Modal.Body>
-          <div className="flex h-96 flex-col">
-            {isLoading && <Spinner color="warning" />}
+          <div className="it flex h-96 flex-col">
+            {isLoading && (
+              <div className="flex h-full w-full items-center justify-center">
+                <Spinner color="warning" size="xl" />
+              </div>
+            )}
             {data?.length === 0 && <div>No users found</div>}
             {data?.map((user) => (
-              <Link
+              <div
                 className="flex w-full gap-2  px-2 py-2 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300"
-                href={`/${user.username ?? ""}`}
+                onClick={() => onRoute(user.username ?? "")}
                 key={user.id}
               >
                 <Image
@@ -63,7 +75,7 @@ function Searcher(props: SearcherProps) {
                   height={50}
                 />
                 <div className="flex items-center gap-2">{user.username}</div>
-              </Link>
+              </div>
             ))}
           </div>
         </Modal.Body>

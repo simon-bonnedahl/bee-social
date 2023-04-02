@@ -86,7 +86,10 @@ const ProfileBio = (user: ProfileBioProps) => {
                   <span>{isFollowing ? "Unfollow" : "Follow"}</span>
                 )}
               </Button>
-              <Button className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500">
+              <Button
+                className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
+                href={`/messages/${user.username}`}
+              >
                 Message
               </Button>
               <button className="px-1">

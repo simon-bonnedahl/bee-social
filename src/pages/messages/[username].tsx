@@ -11,8 +11,9 @@ import { Spinner } from "flowbite-react";
 import { AiOutlinePhone, AiOutlineVideoCamera } from "react-icons/ai";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
 
 const SinglePostPage: NextPage<{ username: string }> = ({ username }) => {
   const { user } = useUser();
@@ -20,7 +21,7 @@ const SinglePostPage: NextPage<{ username: string }> = ({ username }) => {
   return (
     <>
       <Head>
-        <title>Messages</title>
+        <title>Messages - {username}</title>
       </Head>
       <main className="flex h-screen items-center justify-center overflow-hidden bg-gray-100">
         {!user && <SignIn />}
@@ -45,9 +46,9 @@ type InboxProps = {
   username: string;
 };
 const Inbox = (props: InboxProps) => {
-  const [selected, setSelected] = useState<string | null>(
-    props.username ?? null
-  );
+  const [selected, setSelected] = useState<string | null>(props.username);
+  useEffect(() => {}, [selected]);
+
   return (
     <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white xl:ml-64 xl:w-8/12">
       <div className="flex h-full w-4/12 flex-col border-r border-slate-300">
@@ -61,7 +62,7 @@ const Inbox = (props: InboxProps) => {
         </div>
         <ChatList selected={selected} setSelected={setSelected} />
       </div>
-      <Chat username={selected ?? ""} />
+      {selected && <Chat username={selected} />}
     </div>
   );
 };
@@ -191,9 +192,15 @@ type ChatListProps = {
 
 const ChatList = (props: ChatListProps) => {
   const { data: chats, isLoading } = api.user.getAll.useQuery();
+  const router = useRouter();
 
   if (isLoading) return <Spinner color="warning" />;
   if (!chats) return <div>404</div>;
+
+  const onSelect = (username: string) => {
+    props.setSelected(username);
+    router.push(`/messages/${username}`);
+  };
   return (
     <div className="flex h-full flex-col">
       {chats.map((chat) => (
@@ -201,7 +208,7 @@ const ChatList = (props: ChatListProps) => {
           className={`flex w-full gap-2  p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
             props.selected === chat.username && "bg-gray-300"
           }`}
-          onClick={() => props.setSelected(chat.username)}
+          onClick={() => onSelect(chat.username ?? "")}
           key={chat.id}
           disabled={chat.username === props.selected}
         >
@@ -223,4 +230,26 @@ const ChatList = (props: ChatListProps) => {
     </div>
   );
 };
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = generateSSGHelper();
+
+  const username = context.params?.username;
+
+  if (typeof username !== "string") throw new Error("no username");
+
+  await ssg.user.getByUsername.prefetch({ username });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      username,
+    },
+  };
+};
+
+export const getStaticPaths = () => {
+  return { paths: [], fallback: "blocking" };
+};
+
 export default SinglePostPage;
