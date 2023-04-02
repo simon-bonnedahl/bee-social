@@ -3,15 +3,13 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 
 import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
-import Post from "~/components/Post";
 import { SideMenu } from "~/components/SideMenu";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { IoCreateOutline } from "react-icons/io5";
 import { Spinner } from "flowbite-react";
 import { AiOutlinePhone, AiOutlineVideoCamera } from "react-icons/ai";
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
 
@@ -47,7 +45,6 @@ type InboxProps = {
 };
 const Inbox = (props: InboxProps) => {
   const [selected, setSelected] = useState<string | null>(props.username);
-  useEffect(() => {}, [selected]);
 
   return (
     <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white xl:ml-64 xl:w-8/12">
@@ -200,14 +197,14 @@ const ChatList = (props: ChatListProps) => {
 
   const onSelect = (username: string) => {
     props.setSelected(username);
-    router.push(`/messages/${username}`);
+    router.push(`/messages/${username}`).catch((e) => console.log(e));
   };
   return (
     <div className="flex h-full flex-col">
       {chats.map((chat) => (
         <button
           className={`flex w-full gap-2  p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
-            props.selected === chat.username && "bg-gray-300"
+            props.selected === chat.username ? "bg-gray-300" : "bg-white"
           }`}
           onClick={() => onSelect(chat.username ?? "")}
           key={chat.id}
@@ -222,7 +219,7 @@ const ChatList = (props: ChatListProps) => {
           />
           <div className="flex flex-col items-start">
             <span className="font-semibold">
-              {chat.firstName + " " + chat.lastName}
+              {`${chat.firstName} ${chat.lastName}`}
             </span>
             <span>{chat.username}</span>
           </div>

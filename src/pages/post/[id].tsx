@@ -11,8 +11,8 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
   const { data } = api.post.getById.useQuery({
     id: parseInt(id),
   });
-  if (!data) return <div>404</div>;
   const { user } = useUser();
+  if (!data) return <div>404</div>;
 
   return (
     <>
