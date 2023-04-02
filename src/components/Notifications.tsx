@@ -95,7 +95,10 @@ const Drawer = (props: DrawerProps) => {
   );
 };
 
-const FollowNotification = ({ notification, user }: any) => {
+const FollowNotification = ({
+  notification,
+  user,
+}: RouterOutputs["user"]["getNotifications"][number]) => {
   const router = useRouter();
   return (
     <div
@@ -125,7 +128,10 @@ const FollowNotification = ({ notification, user }: any) => {
   );
 };
 
-const LikeNotification = ({ notification, user }: any) => {
+const LikeNotification = ({
+  notification,
+  user,
+}: RouterOutputs["user"]["getNotifications"][number]) => {
   const router = useRouter();
   return (
     <div
@@ -155,7 +161,10 @@ const LikeNotification = ({ notification, user }: any) => {
   );
 };
 
-const CommentNotification = ({ notification, user }: any) => {
+const CommentNotification = ({
+  notification,
+  user,
+}: RouterOutputs["user"]["getNotifications"][number]) => {
   const router = useRouter();
 
   return (
