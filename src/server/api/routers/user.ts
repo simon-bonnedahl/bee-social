@@ -144,7 +144,7 @@ export const userRouter = createTRPCRouter({
           },
         },
       });
-      console.log(follow);
+
       if (follow) return true;
       return false;
     }),

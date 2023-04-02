@@ -50,7 +50,7 @@ function Searcher(props: SearcherProps) {
         <Modal.Header className="w-full">
           <div className="flex w-full items-center gap-2">
             <AiOutlineSearch className="h-6 w-6 text-gray-500" />
-            <InputField onSearch={onSearch} />
+            {visible && <InputField onSearch={onSearch} />}
           </div>
         </Modal.Header>
         <Modal.Body>
@@ -90,6 +90,7 @@ function InputField(props: { onSearch: (search: string) => void }) {
   return (
     <input
       type="text"
+      autoFocus
       className="h-12 w-96 rounded-lg border-none focus:ring-orange-400 dark:bg-gray-700"
       placeholder="Search"
       value={search}
