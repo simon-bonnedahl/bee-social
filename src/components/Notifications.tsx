@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { AiOutlineBell } from "react-icons/ai";
 import { api, RouterOutputs } from "~/utils/api";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Link from "next/link";
 dayjs.extend(relativeTime);
 
 type NotificationsProps = {
@@ -101,9 +102,9 @@ const FollowNotification = ({
 }: RouterOutputs["user"]["getNotifications"][number]) => {
   const router = useRouter();
   return (
-    <div
+    <Link
       className="flex w-full items-center justify-between hover:cursor-pointer"
-      onClick={() => router.push(`/${user.username}`)}
+      href={`/${user.username ?? ""}`}
     >
       <div className="flex items-center space-x-2">
         <Image
@@ -124,7 +125,7 @@ const FollowNotification = ({
           {dayjs(notification.createdAt).fromNow()}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -134,9 +135,9 @@ const LikeNotification = ({
 }: RouterOutputs["user"]["getNotifications"][number]) => {
   const router = useRouter();
   return (
-    <div
+    <Link
       className="flex w-full items-center justify-between hover:cursor-pointer"
-      onClick={() => router.push(`/post/${notification.postId}`)}
+      href={`/post/${notification.postId}`}
     >
       <div className="flex items-center space-x-2">
         <Image
@@ -157,7 +158,7 @@ const LikeNotification = ({
           {dayjs(notification.createdAt).fromNow()}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -168,9 +169,9 @@ const CommentNotification = ({
   const router = useRouter();
 
   return (
-    <div
+    <Link
       className="flex w-full items-center justify-between hover:cursor-pointer"
-      onClick={() => router.push(`/post/${notification.postId}`)}
+      href={`/post/${notification.postId}`}
     >
       <div className="flex items-center space-x-2">
         <Image
@@ -191,7 +192,7 @@ const CommentNotification = ({
           {dayjs(notification.createdAt).fromNow()}
         </span>
       </div>
-    </div>
+    </Link>
   );
 };
 

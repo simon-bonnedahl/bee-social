@@ -176,7 +176,9 @@ export const userRouter = createTRPCRouter({
         console.error("User NOT FOUND", user);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: `User for notification not found. NOTIFICATION ID: ${notification.id}, USER ID: ${notification.userId2}`,
+          message: `User for notification not found. NOTIFICATION ID: ${
+            notification.id
+          }, USER ID: ${notification.userId2 ?? "(No id)"}`,
         });
       }
 
