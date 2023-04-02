@@ -48,6 +48,14 @@ export const userRouter = createTRPCRouter({
           followingId,
         },
       });
+      await ctx.prisma.notification.create({
+        data: {
+          userId: followingId,
+          type: "FOLLOW",
+          userId2: followerId,
+        },
+      });
+
       return follow;
     }),
   unfollow: privateProcedure
@@ -157,6 +165,20 @@ export const userRouter = createTRPCRouter({
         createdAt: "desc",
       },
     });
-    return notifications;
+    //attach user data
+    const users = (await clerkClient.users.getUserList()).map(
+      filterUserForClient
+    );
+    return notifications.map((notification) => {
+      const user = users.find((user) => user.id === notification.userId2);
+      return {
+        notification: {
+          ...notification,
+        },
+        user: {
+          ...user,
+        },
+      };
+    });
   }),
 });

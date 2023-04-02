@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 
 type CreateCommentProps = {
   postId: number;
+  authorId: string;
 };
 
 function CreateComment(props: CreateCommentProps) {
@@ -19,7 +20,7 @@ function CreateComment(props: CreateCommentProps) {
       setVisible(false);
       setContent("");
       toast.success("Comment created");
-      void ctx.post.getAll.invalidate();
+      void ctx.post.getComments.invalidate();
     },
     onError: (e: any) => {
       console.log(e);
@@ -29,7 +30,7 @@ function CreateComment(props: CreateCommentProps) {
 
   const onComment = () => {
     // Send the comment data to the server or perform any other necessary action
-    mutate({ content, postId: props.postId });
+    mutate({ content, postId: props.postId, authorId: props.authorId });
   };
   return (
     <React.Fragment>
@@ -45,7 +46,7 @@ function CreateComment(props: CreateCommentProps) {
         <Modal.Footer className="flex justify-between">
           <Button
             className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
-            onClick={() => onComment}
+            onClick={onComment}
             disabled={!content || isCommenting}
           >
             {isCommenting ? <Spinner color="warning" /> : "Comment"}

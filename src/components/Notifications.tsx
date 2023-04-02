@@ -1,9 +1,13 @@
 import { Sidebar } from "@alfiejones/flowbite-react";
+import dayjs from "dayjs";
 import { Spinner } from "flowbite-react";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { AiOutlineBell } from "react-icons/ai";
-import { api } from "~/utils/api";
+import { api, RouterOutputs } from "~/utils/api";
+dayjs.extend(require("dayjs/plugin/relativeTime"));
 
 type NotificationsProps = {
   width?: string;
@@ -11,6 +15,7 @@ type NotificationsProps = {
 function Notifications(props: NotificationsProps) {
   const { data, isLoading } = api.user.getNotifications.useQuery();
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <React.Fragment>
       <Sidebar.Item
@@ -28,13 +33,15 @@ function Notifications(props: NotificationsProps) {
           {props.width && props.width === "full" && "Notifications"}
         </div>
       </Sidebar.Item>
-      <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
+
+      <Drawer isOpen={isOpen} setIsOpen={setIsOpen} notifications={data} />
     </React.Fragment>
   );
 }
 type DrawerProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  notifications?: any[];
 };
 
 const Drawer = (props: DrawerProps) => {
@@ -55,6 +62,27 @@ const Drawer = (props: DrawerProps) => {
       >
         <article className="relative flex h-full w-96 max-w-lg flex-col space-y-6 overflow-y-scroll pb-10">
           <header className="p-4 text-lg font-bold">Notifications</header>
+          <div className="flex h-full w-full flex-col space-y-2 p-4">
+            {props.notifications?.map(({ notification, user }) => (
+              <div
+                key={notification.id}
+                className="flex w-full flex-col space-y-2"
+              >
+                {notification.type === "FOLLOW" && (
+                  <FollowNotification notification={notification} user={user} />
+                )}
+                {notification.type === "LIKE" && (
+                  <LikeNotification notification={notification} user={user} />
+                )}
+                {notification.type === "COMMENT" && (
+                  <CommentNotification
+                    notification={notification}
+                    user={user}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </article>
       </section>
       <section
@@ -64,6 +92,97 @@ const Drawer = (props: DrawerProps) => {
         }}
       ></section>
     </main>
+  );
+};
+
+const FollowNotification = ({ notification, user }: any) => {
+  const router = useRouter();
+  return (
+    <div
+      className="flex w-full items-center justify-between hover:cursor-pointer"
+      onClick={() => router.push(`/${user.username}`)}
+    >
+      <div className="flex items-center space-x-2">
+        <Image
+          src={user.profileImageUrl}
+          width={40}
+          height={40}
+          className="rounded-full"
+          alt="Profile picture"
+        />
+        <span className="text-sm">
+          <span className="font-semibold">{user.username} </span>
+          started following you
+        </span>
+
+        {/*Time ago */}
+
+        <span className="text-xs text-gray-500">
+          {dayjs(notification.createdAt).fromNow()}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const LikeNotification = ({ notification, user }: any) => {
+  const router = useRouter();
+  return (
+    <div
+      className="flex w-full items-center justify-between hover:cursor-pointer"
+      onClick={() => router.push(`/post/${notification.postId}`)}
+    >
+      <div className="flex items-center space-x-2">
+        <Image
+          src={user.profileImageUrl}
+          width={40}
+          height={40}
+          className="rounded-full"
+          alt="Profile picture"
+        />
+        <span className="text-sm">
+          <span className="font-semibold">{user.username} </span>
+          liked your post
+        </span>
+
+        {/*Time ago */}
+
+        <span className="text-xs text-gray-500">
+          {dayjs(notification.createdAt).fromNow()}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const CommentNotification = ({ notification, user }: any) => {
+  const router = useRouter();
+
+  return (
+    <div
+      className="flex w-full items-center justify-between hover:cursor-pointer"
+      onClick={() => router.push(`/post/${notification.postId}`)}
+    >
+      <div className="flex items-center space-x-2">
+        <Image
+          src={user.profileImageUrl}
+          width={40}
+          height={40}
+          className="rounded-full"
+          alt="Profile picture"
+        />
+        <span className="text-sm">
+          <span className="font-semibold">{user.username} </span>
+          commented on your post
+        </span>
+
+        {/*Time ago */}
+
+        <span className="text-xs text-gray-500">
+          {dayjs(notification.createdAt).fromNow()}
+        </span>
+      </div>
+    </div>
   );
 };
 

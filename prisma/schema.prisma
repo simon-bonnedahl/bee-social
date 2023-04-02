@@ -72,9 +72,10 @@ model Notification {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     type      String
-    userId    String
-    postId    Int?
-    commentId Int?
+    userId    String // the user who will receive the notification
+    postId    Int? // the post that triggered the notification
+    commentId Int? // the comment that triggered the notification
+    userId2   String? // the user who triggered the notification
     read      Boolean  @default(false)
 
     @@index([userId])

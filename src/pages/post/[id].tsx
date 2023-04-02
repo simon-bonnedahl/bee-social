@@ -26,7 +26,6 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
             <SideMenu
               profileImageUrl={user.profileImageUrl ?? null}
               username={user.username ?? ""}
-              highlight="profile"
             />
           </>
         )}

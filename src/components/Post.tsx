@@ -29,7 +29,7 @@ function Post(props: PostProps) {
   });
 
   const onLike = () => {
-    mutate({ postId: post.id });
+    mutate({ postId: post.id, authorId: author.id });
   };
 
   return (
@@ -81,7 +81,7 @@ function Post(props: PostProps) {
           <span className="dark:text-white">{post.likes.length}</span>
         </button>
         <div className="flex items-center gap-x-2">
-          <CreateComment postId={post.id} />
+          <CreateComment postId={post.id} authorId={post.authorId} />
           <span className="dark:text-white">{post.comments.length}</span>
         </div>
       </div>

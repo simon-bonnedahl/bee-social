@@ -20,7 +20,7 @@ import ThemeSwitch from "./ThemeSwitch";
 type SideMenuProps = {
   profileImageUrl: string;
   username: string;
-  highlight: string;
+  highlight?: string;
 };
 function SideMenu(props: SideMenuProps) {
   const BREAKPOINT_TABLET = 1048;

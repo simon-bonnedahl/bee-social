@@ -173,6 +173,7 @@ const Chat = (props: ChatProps) => {
           type="text"
           className="flex w-full justify-between rounded-full border border-slate-300 p-3 "
           placeholder="Message ..."
+          disabled={isSending}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {

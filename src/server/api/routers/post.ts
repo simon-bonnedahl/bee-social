@@ -198,6 +198,7 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         postId: z.number(),
+        authorId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -222,6 +223,16 @@ export const postRouter = createTRPCRouter({
           },
         });
       } else {
+        //create notification
+        await ctx.prisma.notification.create({
+          data: {
+            userId: input.authorId,
+            userId2: userId,
+            postId: input.postId,
+            type: "LIKE",
+          },
+        });
+
         return await ctx.prisma.like.create({
           data: {
             userId: userId,
@@ -252,19 +263,32 @@ export const postRouter = createTRPCRouter({
       z.object({
         postId: z.number(),
         content: z.string().min(1).max(280),
+        authorId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.userId;
       const { success } = await ratelimit.limit(userId);
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-      return await ctx.prisma.comment.create({
+
+      const comment = await ctx.prisma.comment.create({
         data: {
           userId: userId,
           postId: input.postId,
           content: input.content,
         },
       });
+      await ctx.prisma.notification.create({
+        data: {
+          userId: input.authorId,
+          userId2: userId,
+          postId: input.postId,
+          commentId: comment.id,
+          type: "COMMENT",
+        },
+      });
+
+      return comment;
     }),
 
   getComments: publicProcedure
