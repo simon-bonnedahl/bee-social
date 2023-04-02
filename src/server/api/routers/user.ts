@@ -1,4 +1,5 @@
 import clerkClient, { User } from "@clerk/clerk-sdk-node";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "../trpc";
 
@@ -171,6 +172,14 @@ export const userRouter = createTRPCRouter({
     );
     return notifications.map((notification) => {
       const user = users.find((user) => user.id === notification.userId2);
+      if (!user) {
+        console.error("User NOT FOUND", user);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `User for notification not found. NOTIFICATION ID: ${notification.id}, USER ID: ${notification.userId2}`,
+        });
+      }
+
       return {
         notification: {
           ...notification,
