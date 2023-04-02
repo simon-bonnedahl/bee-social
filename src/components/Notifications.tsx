@@ -4,10 +4,10 @@ import { Spinner } from "flowbite-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { toast } from "react-hot-toast";
 import { AiOutlineBell } from "react-icons/ai";
 import { api, RouterOutputs } from "~/utils/api";
-dayjs.extend(require("dayjs/plugin/relativeTime"));
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 type NotificationsProps = {
   width?: string;
@@ -41,7 +41,7 @@ function Notifications(props: NotificationsProps) {
 type DrawerProps = {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  notifications?: any[];
+  notifications?: RouterOutputs["user"]["getNotifications"];
 };
 
 const Drawer = (props: DrawerProps) => {
