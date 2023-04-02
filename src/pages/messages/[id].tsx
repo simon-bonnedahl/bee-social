@@ -8,41 +8,46 @@ import { SideMenu } from "~/components/SideMenu";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { IoCreateOutline } from "react-icons/io5";
 import { Spinner } from "flowbite-react";
+import { AiOutlinePhone, AiOutlineVideoCamera } from "react-icons/ai";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
-const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
+const SinglePostPage: NextPage<{ username: string }> = ({ username }) => {
   const { user } = useUser();
-  if (id !== "inbox") {
-    //Fetch the specific chat of the id
-  }
 
   return (
     <>
       <Head>
         <title>Messages</title>
       </Head>
-      {!user && <SignIn />}
+      <main className="flex h-screen items-center justify-center overflow-hidden bg-gray-100">
+        {!user && <SignIn />}
 
-      {user && (
-        <main className="flex h-screen items-center justify-center overflow-hidden bg-gray-100">
-          <SideMenu
-            profileImageUrl={user.profileImageUrl ?? null}
-            username={user.username ?? ""}
-            highlight="messages"
-          />
+        {user && (
+          <>
+            <SideMenu
+              profileImageUrl={user.profileImageUrl ?? null}
+              username={user.username ?? ""}
+              highlight="messages"
+            />
 
-          <Inbox />
-        </main>
-      )}
+            <Inbox username={username} />
+          </>
+        )}
+      </main>
     </>
   );
 };
 
-const Inbox = () => {
-  const [selected, setSelected] = useState<string | null>(null);
+type InboxProps = {
+  username: string;
+};
+const Inbox = (props: InboxProps) => {
+  const [selected, setSelected] = useState<string | null>(
+    props.username ?? null
+  );
   return (
     <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white xl:ml-64 xl:w-8/12">
       <div className="flex h-full w-4/12 flex-col border-r border-slate-300">
@@ -51,10 +56,10 @@ const Inbox = () => {
             Messages
           </span>
           <button className="duration-200 ease-in-out hover:scale-105">
-            <IoCreateOutline className="h-7 w-7" />
+            <IoCreateOutline className="h-8 w-8" />
           </button>
         </div>
-        <ChatList setSelected={setSelected} />
+        <ChatList selected={selected} setSelected={setSelected} />
       </div>
       <Chat username={selected ?? ""} />
     </div>
@@ -104,41 +109,59 @@ const Chat = (props: ChatProps) => {
         <Spinner color="warning" size="xl" />
       </div>
     );
-  if (!data) return <div>404</div>;
+  if (!data)
+    return (
+      <div className="flex h-full w-8/12 items-center justify-center">
+        <span className="text-lg font-semibold dark:text-white">
+          Could not find user
+        </span>
+      </div>
+    );
   return (
     <div className="flex w-8/12 flex-col">
       {/*Header */}
-      <div className="flex w-full items-center border-b border-slate-300 p-6">
-        <span className="text-lg font-semibold dark:text-white">
-          {data?.fullName}
-        </span>
+      <div className="flex w-full items-center justify-between border-b border-slate-300 px-10 py-6 ">
+        <div className="flex gap-4">
+          <Image
+            src={data.profileImageUrl}
+            alt="Profile picture"
+            className="rounded-full"
+            width={32}
+            height={32}
+          />
+          <span className="text-lg font-semibold dark:text-white">
+            {data?.fullName}
+          </span>
+        </div>
+        <div className="flex gap-4">
+          <button className="duration-200 ease-in-out hover:scale-105">
+            <AiOutlinePhone className="h-8 w-8" />
+          </button>
+          <button className="duration-200 ease-in-out hover:scale-105">
+            <AiOutlineVideoCamera className="h-8 w-8" />
+          </button>
+        </div>
       </div>
       {/*Chat */}
-      <div className="flex h-full flex-col gap-4 overflow-y-scroll p-4">
+      <div className="flex h-full w-full flex-col gap-4 overflow-y-scroll p-4">
         {messages?.map((message) => (
           <div
-            className={`flex w-full items-center justify-${
+            className={`flex w-full items-end justify-${
               message.senderId === data?.id ? "start" : "end"
             }`}
             key={message.id}
           >
             <div
-              className={`flex flex-col items-${
-                message.senderId === data?.id ? "start" : "end"
+              className={`flex max-w-sm  items-center gap-2 rounded-lg p-3  ${
+                message.senderId === data?.id
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-black"
               }`}
             >
-              <div
-                className={`flex items-center gap-2 rounded-md p-2 ${
-                  message.senderId === data?.id
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200 text-black"
-                }`}
-              >
-                <span>{message.content}</span>
-                <span className="text-xs text-gray-400">
-                  {new Date(message.createdAt).toLocaleTimeString()}
-                </span>
-              </div>
+              <span>{message.content}</span>
+              <span className="text-xs text-gray-400">
+                {new Date(message.createdAt).toLocaleTimeString()}
+              </span>
             </div>
           </div>
         ))}
@@ -147,7 +170,7 @@ const Chat = (props: ChatProps) => {
       <div className="w-full p-4">
         <input
           type="text"
-          className=" w-full rounded-full border border-slate-300 p-3"
+          className="flex w-full justify-between rounded-full border border-slate-300 p-3 "
           placeholder="Message ..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -163,6 +186,7 @@ const Chat = (props: ChatProps) => {
 };
 type ChatListProps = {
   setSelected: (id: string | null) => void;
+  selected: string | null;
 };
 
 const ChatList = (props: ChatListProps) => {
@@ -171,21 +195,29 @@ const ChatList = (props: ChatListProps) => {
   if (isLoading) return <Spinner color="warning" />;
   if (!chats) return <div>404</div>;
   return (
-    <div className="flex h-full flex-col gap-2">
+    <div className="flex h-full flex-col">
       {chats.map((chat) => (
         <button
-          className="flex w-full gap-2  px-2 py-2 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300"
+          className={`flex w-full gap-2  p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
+            props.selected === chat.username && "bg-gray-300"
+          }`}
           onClick={() => props.setSelected(chat.username)}
           key={chat.id}
+          disabled={chat.username === props.selected}
         >
           <Image
             src={chat.profileImageUrl}
             alt="Profile picture"
             className="rounded-full"
-            width={50}
-            height={50}
+            width={60}
+            height={60}
           />
-          <div className="flex items-center gap-2">{chat.username}</div>
+          <div className="flex flex-col items-start">
+            <span className="font-semibold">
+              {chat.firstName + " " + chat.lastName}
+            </span>
+            <span>{chat.username}</span>
+          </div>
         </button>
       ))}
     </div>
