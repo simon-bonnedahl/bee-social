@@ -157,7 +157,7 @@ export function PostSmall(props: PostProps) {
   return (
     <Link href={`/post/${post.id}`} className="group">
       {post.imageUrl && (
-        <div className="relative -z-10 h-80 w-80 md:h-72  md:w-72 ">
+        <div className="xl relative -z-10 h-80 w-80 md:h-72 md:w-72">
           <Image
             src={post.imageUrl}
             alt="Post Image"
@@ -165,7 +165,7 @@ export function PostSmall(props: PostProps) {
             height={325}
           />
           {/*Shade Overlay*/}
-          <div className=" absolute inset-0 flex items-center justify-center  bg-black opacity-0 duration-500 ease-in-out  group-hover:opacity-40"></div>
+          <div className=" absolute inset-0 flex items-center justify-center  opacity-0 duration-500 ease-in-out  group-hover:opacity-40"></div>
           {/*Likes and Comments Overlay*/}
           <div className="absolute inset-0 flex items-center justify-center gap-4  opacity-0 duration-500 ease-in-out  group-hover:opacity-100">
             <div className="flex items-center gap-2 group-hover:opacity-100">

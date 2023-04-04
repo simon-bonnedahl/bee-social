@@ -80,3 +80,11 @@ model Notification {
 
     @@index([userId])
 }
+
+model Bio {
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    content   String
+    userId    String
+}
