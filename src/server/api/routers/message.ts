@@ -54,6 +54,7 @@ export const messageRouter = createTRPCRouter({
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
       const userId = ctx.userId;
+
       const messages = await ctx.prisma.message.findMany({
         where: {
           OR: [
@@ -66,6 +67,9 @@ export const messageRouter = createTRPCRouter({
               receiverId: userId,
             },
           ],
+        },
+        orderBy: {
+          createdAt: "asc",
         },
       });
       return messages;
