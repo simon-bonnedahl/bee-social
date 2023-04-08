@@ -12,14 +12,16 @@ datasource db {
 }
 
 model Post {
-    id        Int       @id @default(autoincrement())
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    content   String    @db.VarChar(500)
-    imageId   String?
-    authorId  String
-    likes     Like[]
-    comments  Comment[]
+    id           Int            @id @default(autoincrement())
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    content      String         @db.VarChar(500)
+    imageId      String?
+    authorId     String
+    likes        Like[]
+    comments     Comment[]
+    userId       Int?
+    Notification Notification[]
 }
 
 model Like {
@@ -34,37 +36,43 @@ model Like {
 }
 
 model Comment {
-    id        Int      @id @default(autoincrement())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    content   String
-    postId    Int
-    userId    String
-    Post      Post     @relation(fields: [postId], references: [id])
+    id           Int            @id @default(autoincrement())
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    content      String
+    postId       Int
+    userId       String
+    Post         Post           @relation(fields: [postId], references: [id])
+    Notification Notification[]
 
     @@index([postId])
 }
 
 model Follow {
-    id          Int      @id @default(autoincrement())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    followerId  String
-    followingId String
+    id           Int            @id @default(autoincrement())
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    followerId   String
+    followingId  String
+    Notification Notification[]
 
     @@unique([followerId, followingId])
 }
 
 model Message {
-    id         Int      @id @default(autoincrement())
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-    content    String
-    senderId   String
-    receiverId String
-    read       Boolean  @default(false)
+    id          Int        @id @default(autoincrement())
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    content     String
+    senderId    String
+    receiverId  String
+    read        Boolean    @default(false)
+    GroupChat   GroupChat? @relation(fields: [groupChatId], references: [id])
+    groupChatId Int?
+    userId      Int?
 
     @@index([senderId, receiverId])
+    @@index([groupChatId])
 }
 
 model Notification {
@@ -76,8 +84,14 @@ model Notification {
     postId    Int? // the post that triggered the notification
     commentId Int? // the comment that triggered the notification
     userId2   String? // the user who triggered the notification
-    read      Boolean  @default(false)
 
+    read     Boolean  @default(false)
+    Post     Post?    @relation(fields: [postId], references: [id])
+    Comment  Comment? @relation(fields: [commentId], references: [id])
+    Follow   Follow?  @relation(fields: [followId], references: [id])
+    followId Int?
+
+    @@unique([userId, postId, commentId, userId2])
     @@index([userId])
 }
 
@@ -86,5 +100,26 @@ model Bio {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     content   String
-    userId    String
+}
+
+model GroupChat {
+    id        Int             @id @default(autoincrement())
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+    name      String
+    creatorId String
+    messages  Message[]
+    users     UserGroupChat[]
+}
+
+model UserGroupChat {
+    id          Int       @id @default(autoincrement())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    userId      String
+    groupChatId Int
+    GroupChat   GroupChat @relation(fields: [groupChatId], references: [id])
+
+    @@unique([userId, groupChatId])
+    @@index([groupChatId])
 }

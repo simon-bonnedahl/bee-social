@@ -49,13 +49,21 @@ export const userRouter = createTRPCRouter({
           followingId,
         },
       });
-      await ctx.prisma.notification.create({
-        data: {
+      const notification = await ctx.prisma.notification.findFirst({
+        where: {
           userId: followingId,
           type: "FOLLOW",
           userId2: followerId,
         },
       });
+      if (!notification)
+        await ctx.prisma.notification.create({
+          data: {
+            userId: followingId,
+            type: "FOLLOW",
+            userId2: followerId,
+          },
+        });
 
       return follow;
     }),

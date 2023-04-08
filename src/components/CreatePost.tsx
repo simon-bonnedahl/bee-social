@@ -179,8 +179,6 @@ type WriteContentProps = {
   setContent: (content: string) => void;
 };
 function WriteContent(props: WriteContentProps) {
-  const [content, setContent] = useState(props.content);
-
   const { user } = useUser();
   return (
     <div className="flex w-full flex-col gap-2">
@@ -203,15 +201,12 @@ function WriteContent(props: WriteContentProps) {
         <textarea
           id="message"
           rows={6}
+          autoFocus
+          ref={(input) => input && input.focus()}
           className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-orange-500 focus:ring-orange-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-orange-500 dark:focus:ring-orange-500"
           placeholder="What do you want to share?"
-          value={content}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              props.setContent(content);
-            }
-          }}
-          onChange={(e) => setContent(e.target.value)}
+          value={props.content}
+          onChange={(e) => props.setContent(e.target.value)}
         />
       </form>
     </div>

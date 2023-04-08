@@ -61,20 +61,14 @@ type CommentInputProps = {
   setContent: (content: string) => void;
 };
 function CommentInput(props: CommentInputProps) {
-  const [comment, setComment] = React.useState<string>(props.content);
   return (
     <div className="flex flex-col gap-y-4">
       <textarea
         className="rounded-lg border border-gray-300 p-4 dark:border-gray-600"
         placeholder="Write a comment..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        onKeyPress={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            props.setContent(comment);
-          }
-        }}
+        ref={(input) => input && input.focus()}
+        value={props.content}
+        onChange={(e) => props.setContent(e.target.value)}
       />
     </div>
   );

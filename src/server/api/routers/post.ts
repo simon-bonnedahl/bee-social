@@ -259,15 +259,25 @@ export const postRouter = createTRPCRouter({
           },
         });
       } else {
-        //create notification
-        await ctx.prisma.notification.create({
-          data: {
+        //create notification if the notification hasnt been made before
+
+        const notification = await ctx.prisma.notification.findFirst({
+          where: {
             userId: input.authorId,
             userId2: userId,
             postId: input.postId,
             type: "LIKE",
           },
         });
+        if (!notification)
+          await ctx.prisma.notification.create({
+            data: {
+              userId: input.authorId,
+              userId2: userId,
+              postId: input.postId,
+              type: "LIKE",
+            },
+          });
 
         return await ctx.prisma.like.create({
           data: {

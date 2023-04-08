@@ -13,6 +13,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
+import CreateChat from "~/components/CreateChat";
 
 const SinglePostPage: NextPage<{ username: string }> = ({ username }) => {
   const { user } = useUser();
@@ -54,9 +55,7 @@ const Inbox = (props: InboxProps) => {
           <span className="text-lg font-semibold dark:text-white">
             Messages
           </span>
-          <button className="duration-200 ease-in-out hover:scale-105">
-            <IoCreateOutline className="h-8 w-8 dark:text-white" />
-          </button>
+          <CreateChat />
         </div>
         <ChatList selected={selected} setSelected={setSelected} />
       </div>

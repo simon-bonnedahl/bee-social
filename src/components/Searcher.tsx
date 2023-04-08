@@ -12,17 +12,13 @@ type SearcherProps = {
 function Searcher(props: SearcherProps) {
   const [visible, setVisible] = React.useState(false);
 
-  const [search, setSearch] = React.useState("");
+  const [input, setInput] = React.useState("");
 
   const { data, isLoading } = api.user.getBySearch.useQuery({
-    search,
+    search: input,
   });
 
   const router = useRouter();
-
-  const onSearch = (search: string) => {
-    setSearch(search);
-  };
 
   const onRoute = (username: string) => {
     setVisible(false);
@@ -49,7 +45,7 @@ function Searcher(props: SearcherProps) {
         <Modal.Header className="w-full">
           <div className="flex w-full items-center gap-2">
             <AiOutlineSearch className="h-6 w-6 text-gray-500" />
-            {visible && <InputField onSearch={onSearch} />}
+            {visible && <InputField input={input} setInput={setInput} />}
           </div>
         </Modal.Header>
         <Modal.Body>
@@ -85,22 +81,20 @@ function Searcher(props: SearcherProps) {
   );
 }
 
-function InputField(props: { onSearch: (search: string) => void }) {
-  const [search, setSearch] = React.useState("");
-
+type InputFieldProps = {
+  input: string;
+  setInput: (input: string) => void;
+};
+export function InputField(props: InputFieldProps) {
   return (
     <input
       type="text"
       autoFocus
-      className="h-12 w-96 rounded-lg border-none focus:ring-orange-400 dark:bg-gray-700"
+      className="h-12 w-96 rounded-lg border-solid focus:ring-yellow-400 dark:bg-gray-700"
       placeholder="Search"
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          props.onSearch(search);
-        }
-      }}
+      ref={(input) => input && input.focus()}
+      value={props.input}
+      onChange={(e) => props.setInput(e.target.value)}
     />
   );
 }

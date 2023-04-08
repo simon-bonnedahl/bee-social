@@ -24,6 +24,7 @@ function Post(props: PostProps) {
   const { mutate: like, isLoading: isLiking } = api.post.like.useMutation({
     onSuccess: () => {
       void ctx.post.getAll.invalidate();
+      toast.success("Post liked");
     },
     onError: (e: any) => {
       console.log(e);
@@ -35,6 +36,7 @@ function Post(props: PostProps) {
     {
       onSuccess: () => {
         void ctx.post.getAll.invalidate();
+        toast.success("Post removed");
       },
       onError: (e: any) => {
         console.log(e);
