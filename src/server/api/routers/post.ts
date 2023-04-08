@@ -171,7 +171,7 @@ export const postRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        content: z.string().min(1).max(280),
+        content: z.string().min(1).max(500),
         image: z.string(),
       })
     )
@@ -233,7 +233,7 @@ export const postRouter = createTRPCRouter({
   like: privateProcedure
     .input(
       z.object({
-        postId: z.number().max(1000),
+        postId: z.number(),
         authorId: z.string(),
       })
     )

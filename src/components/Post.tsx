@@ -88,7 +88,7 @@ function Post(props: PostProps) {
           {user?.id !== author.id && <Dropdown.Item>Report</Dropdown.Item>}
         </Dropdown>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 w-96">
         <p className="text-gray-700 dark:text-white">{post.content}</p>
       </div>
       <div className="mt-4">
@@ -140,7 +140,7 @@ function CommentSection(props: CommentSectionProps) {
   const { mutate: remove } = api.post.removeComment.useMutation({
     onSuccess: () => {
       toast.success("Comment removed");
-      void ctx.post.getComments.invalidate();
+      void ctx.post.getById.invalidate();
     },
     onError: (e: any) => {
       console.log(e);

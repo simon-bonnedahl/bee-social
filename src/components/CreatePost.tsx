@@ -13,6 +13,8 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import { api } from "~/utils/api";
 import Resizer from "react-image-file-resizer";
 import { toast } from "react-hot-toast";
+import { TRPCClientError } from "@trpc/client";
+import { TRPCError } from "@trpc/server";
 
 type CreatePostProps = {
   width?: string;
@@ -37,9 +39,13 @@ function CreatePost(props: CreatePostProps) {
       toast.success("Post created");
       void ctx.post.getAll.invalidate();
     },
-    onError: (e: any) => {
-      console.log(e);
-      toast.error("Something went wrong");
+    onError: (e) => {
+      if (e instanceof TRPCClientError && e.message) {
+        /* eslint-disable */
+        const error = JSON.parse(e.message)[0];
+        toast.error(error.message ?? "Something went wrong");
+        /* eslint-enable */
+      }
     },
   });
 

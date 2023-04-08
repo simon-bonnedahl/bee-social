@@ -48,7 +48,7 @@ const Inbox = (props: InboxProps) => {
   const [selected, setSelected] = useState<string | null>(props.username);
 
   return (
-    <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white dark:bg-gray-800  xl:ml-64 xl:w-8/12">
+    <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white dark:bg-gray-800  md:ml-24 md:w-10/12 lg:ml-64 lg:w-8/12">
       <div className="flex h-full w-4/12 flex-col border-r border-slate-300">
         <div className="flex w-full items-center justify-between border-b border-slate-300 p-6">
           <span className="text-lg font-semibold dark:text-white">
