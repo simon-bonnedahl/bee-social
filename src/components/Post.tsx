@@ -21,7 +21,7 @@ function Post(props: PostProps) {
   const ctx = api.useContext();
   const { user } = useUser();
 
-  const { mutate: like } = api.post.like.useMutation({
+  const { mutate: like, isLoading: isLiking } = api.post.like.useMutation({
     onSuccess: () => {
       void ctx.post.getAll.invalidate();
     },
@@ -31,22 +31,24 @@ function Post(props: PostProps) {
     },
   });
 
-  const { mutate: remove } = api.post.remove.useMutation({
-    onSuccess: () => {
-      void ctx.post.getAll.invalidate();
-    },
-    onError: (e: any) => {
-      console.log(e);
-      toast.error("Something went wrong");
-    },
-  });
+  const { mutate: remove, isLoading: isRemoving } = api.post.remove.useMutation(
+    {
+      onSuccess: () => {
+        void ctx.post.getAll.invalidate();
+      },
+      onError: (e: any) => {
+        console.log(e);
+        toast.error("Something went wrong");
+      },
+    }
+  );
 
   const onLike = () => {
-    like({ postId: post.id, authorId: author.id });
+    if (!isLiking) like({ postId: post.id, authorId: author.id });
   };
 
   const onRemove = () => {
-    remove({ postId: post.id });
+    if (!isRemoving) remove({ postId: post.id });
   };
 
   return (
