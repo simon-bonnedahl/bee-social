@@ -282,7 +282,7 @@ function BottomMenu(props: MenuProps) {
             Wallet
           </span>
         </button>
-        <CreatePost />
+
         <button
           type="button"
           className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800"

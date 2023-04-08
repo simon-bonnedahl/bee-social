@@ -8,7 +8,9 @@ import { Spinner } from "@alfiejones/flowbite-react";
 import CreateComment from "./CreateComment";
 import Image from "next/image";
 import { BsChatFill } from "react-icons/bs";
+import { BsThreeDots } from "react-icons/bs";
 import Link from "next/link";
+import { Dropdown } from "flowbite-react";
 dayjs.extend(relativeTime);
 
 type PostProps = RouterOutputs["post"]["getAll"][number];
@@ -18,7 +20,18 @@ function Post(props: PostProps) {
 
   const ctx = api.useContext();
   const { user } = useUser();
-  const { mutate } = api.post.like.useMutation({
+
+  const { mutate: like } = api.post.like.useMutation({
+    onSuccess: () => {
+      void ctx.post.getAll.invalidate();
+    },
+    onError: (e: any) => {
+      console.log(e);
+      toast.error("Something went wrong");
+    },
+  });
+
+  const { mutate: remove } = api.post.remove.useMutation({
     onSuccess: () => {
       void ctx.post.getAll.invalidate();
     },
@@ -29,32 +42,51 @@ function Post(props: PostProps) {
   });
 
   const onLike = () => {
-    mutate({ postId: post.id, authorId: author.id });
+    like({ postId: post.id, authorId: author.id });
+  };
+
+  const onRemove = () => {
+    remove({ postId: post.id });
   };
 
   return (
-    <div className="bg-white p-8  dark:bg-gray-800">
-      <div className="flex items-center gap-x-4">
-        <Link className="hover:cursor-pointer" href={"/" + author.username}>
-          <Image
-            src={author.profileImageUrl}
-            alt="Profile Picture"
-            className="h-12 w-12 rounded-full"
-            width={40}
-            height={40}
-          />
-        </Link>
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold dark:text-white">
-            <Link className="hover:cursor-pointer" href={"/" + author.username}>
-              {author.username}
-            </Link>
-            <span className="text-xs text-gray-500 dark:text-gray-300">
-              {" · "}
-              {dayjs(post.createdAt).fromNow()}
+    <div className=" bg-white p-8 dark:bg-gray-800">
+      <div className="flex justify-between ">
+        <div className="flex items-center gap-x-4">
+          <Link className="hover:cursor-pointer" href={"/" + author.username}>
+            <Image
+              src={author.profileImageUrl}
+              alt="Profile Picture"
+              className="h-12 w-12 rounded-full"
+              width={40}
+              height={40}
+            />
+          </Link>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold dark:text-white">
+              <Link
+                className="hover:cursor-pointer"
+                href={"/" + author.username}
+              >
+                {author.username}
+              </Link>
+              <span className="text-xs text-gray-500 dark:text-gray-300">
+                {" · "}
+                {dayjs(post.createdAt).fromNow()}
+              </span>
             </span>
-          </span>
+          </div>
         </div>
+        <Dropdown
+          label={<BsThreeDots className="h-6 w-6" />}
+          class="bg-transparent"
+          arrowIcon={false}
+        >
+          {user?.id === author.id && (
+            <Dropdown.Item onClick={onRemove}>Remove</Dropdown.Item>
+          )}
+          {user?.id !== author.id && <Dropdown.Item>Report</Dropdown.Item>}
+        </Dropdown>
       </div>
       <div className="mt-4">
         <p className="text-gray-700 dark:text-white">{post.content}</p>
@@ -106,7 +138,7 @@ function CommentSection(props: CommentSectionProps) {
 
   return (
     <div>
-      <div className="flex max-h-28 flex-col items-center gap-2 overflow-y-scroll">
+      <div className="flex max-h-28 flex-col items-center gap-2 overflow-y-scroll ">
         {[...data].map(({ comment, user }) => {
           return (
             <div className="flex w-full items-center gap-x-4" key={comment.id}>
@@ -125,7 +157,7 @@ function CommentSection(props: CommentSectionProps) {
                 </Link>
               )}
 
-              <div className="flex flex-col">
+              <div className="flex w-96 flex-col">
                 <span className="text-xs font-semibold dark:text-white">
                   <Link
                     className="hover:cursor-pointer"

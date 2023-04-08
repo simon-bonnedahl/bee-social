@@ -194,10 +194,46 @@ export const postRouter = createTRPCRouter({
         return post;
       }
     }),
-  like: privateProcedure
+  remove: privateProcedure
     .input(
       z.object({
         postId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      const post = await ctx.prisma.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+      });
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+      if (post.authorId !== userId) throw new TRPCError({ code: "FORBIDDEN" });
+
+      //remove all likes and comments
+      await ctx.prisma.like.deleteMany({
+        where: {
+          postId: input.postId,
+        },
+      });
+      await ctx.prisma.comment.deleteMany({
+        where: {
+          postId: input.postId,
+        },
+      });
+
+      const deletedPost = await ctx.prisma.post.delete({
+        where: {
+          id: input.postId,
+        },
+      });
+      return deletedPost;
+    }),
+
+  like: privateProcedure
+    .input(
+      z.object({
+        postId: z.number().max(1000),
         authorId: z.string(),
       })
     )
