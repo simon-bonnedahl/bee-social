@@ -79,7 +79,7 @@ function Post(props: PostProps) {
         </div>
         <Dropdown
           label={<BsThreeDots className="h-6 w-6" />}
-          class="bg-transparent"
+          color={"transparent"}
           arrowIcon={false}
         >
           {user?.id === author.id && (
@@ -133,6 +133,25 @@ function CommentSection(props: CommentSectionProps) {
   const { data, isLoading } = api.post.getComments.useQuery({
     postId: props.postId,
   });
+
+  const { user: me } = useUser();
+  const ctx = api.useContext();
+
+  const { mutate: remove } = api.post.removeComment.useMutation({
+    onSuccess: () => {
+      toast.success("Comment removed");
+      void ctx.post.getComments.invalidate();
+    },
+    onError: (e: any) => {
+      console.log(e);
+      toast.error("Something went wrong");
+    },
+  });
+
+  const onRemoveComment = (commentId: number) => {
+    remove({ commentId });
+  };
+
   if (isLoading) return <Spinner color="warning" />;
   if (!data) return <div>Something went wrong loading comments</div>;
 
@@ -176,6 +195,18 @@ function CommentSection(props: CommentSectionProps) {
                   {comment.content}
                 </p>
               </div>
+
+              {me?.id === comment.userId && (
+                <Dropdown
+                  label={<BsThreeDots className="h-4 w-4" />}
+                  arrowIcon={false}
+                  color={"transparent"}
+                >
+                  <Dropdown.Item onClick={() => onRemoveComment(comment.id)}>
+                    Remove
+                  </Dropdown.Item>
+                </Dropdown>
+              )}
             </div>
           );
         })}

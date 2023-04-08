@@ -326,6 +326,29 @@ export const postRouter = createTRPCRouter({
 
       return comment;
     }),
+  removeComment: privateProcedure
+    .input(
+      z.object({
+        commentId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId;
+      const comment = await ctx.prisma.comment.findUnique({
+        where: {
+          id: input.commentId,
+        },
+      });
+      if (!comment) throw new TRPCError({ code: "NOT_FOUND" });
+      if (comment.userId !== userId) throw new TRPCError({ code: "FORBIDDEN" });
+
+      const deletedComment = await ctx.prisma.comment.delete({
+        where: {
+          id: input.commentId,
+        },
+      });
+      return deletedComment;
+    }),
 
   getComments: publicProcedure
     .input(
