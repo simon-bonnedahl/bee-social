@@ -22,7 +22,7 @@ const SinglePostPage: NextPage<{ username: string }> = ({ username }) => {
       <Head>
         <title>Messages - {username}</title>
       </Head>
-      <main className="flex h-screen items-center justify-center overflow-hidden bg-gray-100">
+      <main className="flex h-screen items-center justify-center overflow-hidden bg-gray-100 dark:bg-gray-700">
         {!user && <SignIn />}
 
         {user && (
@@ -48,14 +48,14 @@ const Inbox = (props: InboxProps) => {
   const [selected, setSelected] = useState<string | null>(props.username);
 
   return (
-    <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white xl:ml-64 xl:w-8/12">
+    <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white dark:bg-gray-800  xl:ml-64 xl:w-8/12">
       <div className="flex h-full w-4/12 flex-col border-r border-slate-300">
         <div className="flex w-full items-center justify-between border-b border-slate-300 p-6">
           <span className="text-lg font-semibold dark:text-white">
             Messages
           </span>
           <button className="duration-200 ease-in-out hover:scale-105">
-            <IoCreateOutline className="h-8 w-8" />
+            <IoCreateOutline className="h-8 w-8 dark:text-white" />
           </button>
         </div>
         <ChatList selected={selected} setSelected={setSelected} />
@@ -134,10 +134,10 @@ const Chat = (props: ChatProps) => {
         </div>
         <div className="flex gap-4">
           <button className="duration-200 ease-in-out hover:scale-105">
-            <AiOutlinePhone className="h-8 w-8" />
+            <AiOutlinePhone className="h-8 w-8 dark:text-white" />
           </button>
           <button className="duration-200 ease-in-out hover:scale-105">
-            <AiOutlineVideoCamera className="h-8 w-8" />
+            <AiOutlineVideoCamera className="h-8 w-8 dark:text-white" />
           </button>
         </div>
       </div>
@@ -205,7 +205,9 @@ const ChatList = (props: ChatListProps) => {
       {chats.map((chat) => (
         <button
           className={`flex w-full gap-2 p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
-            props.selected === chat.username ? "bg-gray-300" : "bg-white"
+            props.selected === chat.username
+              ? "bg-gray-300 dark:bg-gray-600"
+              : "bg-white dark:bg-gray-800"
           }`}
           onClick={() => onSelect(chat.username ?? "")}
           key={chat.id}
@@ -219,10 +221,10 @@ const ChatList = (props: ChatListProps) => {
             height={60}
           />
           <div className="flex flex-col items-start">
-            <span className="font-semibold">
+            <span className="font-semibold dark:text-white">
               {`${chat.firstName} ${chat.lastName}`}
             </span>
-            <span>{chat.username}</span>
+            <span className=" dark:text-white">{chat.username}</span>
           </div>
         </button>
       ))}

@@ -73,7 +73,9 @@ function Searcher(props: SearcherProps) {
                   width={50}
                   height={50}
                 />
-                <div className="flex items-center gap-2">{user.username}</div>
+                <div className="flex items-center gap-2  dark:text-white">
+                  {user.username}
+                </div>
               </div>
             ))}
           </div>

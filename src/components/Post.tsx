@@ -78,7 +78,7 @@ function Post(props: PostProps) {
           </div>
         </div>
         <Dropdown
-          label={<BsThreeDots className="h-6 w-6" />}
+          label={<BsThreeDots className="h-6 w-6 dark:text-white" />}
           color={"transparent"}
           arrowIcon={false}
         >
@@ -198,7 +198,7 @@ function CommentSection(props: CommentSectionProps) {
 
               {me?.id === comment.userId && (
                 <Dropdown
-                  label={<BsThreeDots className="h-4 w-4" />}
+                  label={<BsThreeDots className="h-4 w-4 dark:text-white" />}
                   arrowIcon={false}
                   color={"transparent"}
                 >

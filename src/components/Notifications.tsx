@@ -49,7 +49,7 @@ const Drawer = (props: DrawerProps) => {
   return (
     <main
       className={
-        " fixed inset-0 top-0 left-0 z-50 transform overflow-hidden bg-gray-900 bg-opacity-25 ease-in-out " +
+        "fixed inset-0 top-0 left-0 z-50 transform overflow-hidden bg-gray-900 bg-opacity-25 ease-in-out " +
         (props.isOpen
           ? " translate-x-0 opacity-100 transition-opacity duration-500  "
           : " -translate-x-full opacity-0 transition-all delay-500  ")
@@ -57,12 +57,14 @@ const Drawer = (props: DrawerProps) => {
     >
       <section
         className={
-          " delay-400 absolute left-0 h-full w-96 max-w-lg transform bg-white shadow-xl transition-all duration-500 ease-in-out  " +
+          " delay-400 absolute left-0 h-full w-96 max-w-lg transform bg-white shadow-xl transition-all duration-500 ease-in-out dark:bg-gray-800  " +
           (props.isOpen ? " translate-x-0 " : " -translate-x-full ")
         }
       >
         <article className="relative flex h-full w-96 max-w-lg flex-col space-y-6 overflow-y-scroll pb-10">
-          <header className="p-4 text-lg font-bold">Notifications</header>
+          <header className="p-4 text-lg font-bold dark:text-white">
+            Notifications
+          </header>
           <div className="flex h-full w-full flex-col space-y-2 p-4">
             {props.notifications?.map(({ notification, user }) => (
               <div
@@ -113,7 +115,7 @@ const FollowNotification = ({
           className="rounded-full"
           alt="Profile picture"
         />
-        <span className="text-sm">
+        <span className="text-sm dark:text-white">
           <span className="font-semibold">{user.username} </span>
           started following you
         </span>
@@ -145,7 +147,7 @@ const LikeNotification = ({
           className="rounded-full"
           alt="Profile picture"
         />
-        <span className="text-sm">
+        <span className="text-sm dark:text-white">
           <span className="font-semibold">{user.username} </span>
           liked your post
         </span>
@@ -177,7 +179,7 @@ const CommentNotification = ({
           className="rounded-full"
           alt="Profile picture"
         />
-        <span className="text-sm">
+        <span className="text-sm dark:text-white">
           <span className="font-semibold">{user.username} </span>
           commented on your post
         </span>

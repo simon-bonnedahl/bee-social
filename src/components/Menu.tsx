@@ -96,7 +96,7 @@ function SideMenu(props: MenuProps) {
             >
               <div className="relative mt-2 flex items-center  gap-5">
                 {props.highlight === "profile" && (
-                  <div className="z-5 absolute inset-0 flex h-8 w-8 scale-125 items-center justify-center rounded-full border-2 border-black bg-transparent"></div>
+                  <div className="z-5 absolute inset-0 flex h-8 w-8 scale-125 items-center justify-center rounded-full border-2 border-black bg-transparent dark:border-white"></div>
                 )}
                 {props.profileImageUrl ? (
                   <Image
@@ -193,7 +193,10 @@ function CollapsedSideMenu(props: MenuProps) {
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <Tooltip content="Profile">
-                <div className="mt-2 flex items-center gap-5  ">
+                <div className="relative mt-2 flex items-center  gap-5">
+                  {props.highlight === "profile" && (
+                    <div className="z-5 absolute inset-0 flex h-8 w-8 scale-125 items-center justify-center rounded-full border-2 border-black bg-transparent dark:border-white"></div>
+                  )}
                   {props.profileImageUrl ? (
                     <Image
                       className="h-8 w-8 rounded-full"
