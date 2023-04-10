@@ -11,31 +11,100 @@ const filterUserForClient = (user: User) => ({
 });
 
 export const userRouter = createTRPCRouter({
-  // This is the same as the `getAll` procedure in the `postRouter`
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const users = await clerkClient.users.getUserList({
-      limit: 100,
+  create: privateProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        profileImageUrl: z.string(),
+        email: z.string(),
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: ctx.userId,
+        },
+      });
+
+      if (user) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Username already exists",
+        });
+      }
+      const newUser = await ctx.prisma.user.create({
+        data: {
+          id: ctx.userId,
+          username: input.username,
+          profileImageUrl: input.profileImageUrl,
+          email: input.email,
+          firstName: input.firstName || null,
+          lastName: input.lastName || null,
+        },
+      });
+      return newUser;
+    }),
+
+  me: privateProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: {
+        id: ctx.userId,
+      },
     });
-    return users;
+    return user;
   }),
+
   getBySearch: publicProcedure
     .input(z.object({ search: z.string() }))
-    .query(async ({ input }) => {
-      const users = await clerkClient.users.getUserList({
-        limit: 10,
-        query: input.search,
+    .query(async ({ input, ctx }) => {
+      const users = ctx.prisma.user.findMany({
+        where: {
+          OR: [
+            {
+              username: {
+                contains: input.search,
+              },
+            },
+            {
+              firstName: {
+                contains: input.search,
+              },
+            },
+            {
+              lastName: {
+                contains: input.search,
+              },
+            },
+          ],
+        },
       });
+
       return users;
     }),
   getByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
-    .query(async ({ input }) => {
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
+    .query(async ({ input, ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          username: input.username,
+        },
       });
-      if (user) return filterUserForClient(user);
-      return null;
+      return user;
     }),
+  getById: publicProcedure
+
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+      return user;
+    }),
+
   follow: privateProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -138,12 +207,20 @@ export const userRouter = createTRPCRouter({
         },
       });
 
+      const u = await ctx.prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+      });
+      const bio = u?.bio;
+
       return {
         ...filterUserForClient(user),
         followers,
         following,
         posts,
         fullName: `${user.firstName ?? "Not"} ${user.lastName ?? "Found"}`,
+        bio,
       };
     }),
   isFollowing: privateProcedure
@@ -153,14 +230,7 @@ export const userRouter = createTRPCRouter({
       const followerId = ctx.userId;
       if (!followerId) return null;
 
-      const follow = await ctx.prisma.follow.findUnique({
-        where: {
-          followerId_followingId: {
-            followerId,
-            followingId,
-          },
-        },
-      });
+      const follow = true;
 
       if (follow) return true;
       return false;

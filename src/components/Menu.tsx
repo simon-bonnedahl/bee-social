@@ -75,7 +75,7 @@ function SideMenu(props: MenuProps) {
             </Sidebar.Item>
             <Searcher width="full" />
             <Sidebar.Item
-              href="/messages/inbox"
+              href="/chat/inbox"
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
@@ -169,12 +169,12 @@ function CollapsedSideMenu(props: MenuProps) {
               <Searcher />
             </Tooltip>
             <Sidebar.Item
-              href="/messages/inbox"
+              href="/chat/inbox"
               className=" w-fit  text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
-              <Tooltip content="Messages">
+              <Tooltip content="Chat">
                 <div className="mt-2 flex items-center gap-5  ">
-                  {props.highlight === "messages" ? (
+                  {props.highlight === "chat" ? (
                     <IoPaperPlane className="h-8 w-8" />
                   ) : (
                     <IoPaperPlaneOutline className="h-8 w-8" />

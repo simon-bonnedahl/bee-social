@@ -116,10 +116,7 @@ const ProfileBio = (user: ProfileBioProps) => {
         {/*Bio*/}
         <div className=" h-24 max-w-2xl md:max-w-lg">
           <span className="text-sm font-semibold">{user.fullName}</span>
-          <p className=" flex-wrap break-words">
-            (bio) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-            vitae nisl vitae nisl lacinia ultricies. Sed vitae nisl vitae nisl
-          </p>
+          <p className=" flex-wrap break-words">{user.bio}</p>
         </div>
       </div>
     </div>

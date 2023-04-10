@@ -1,11 +1,39 @@
-import { SignIn, useUser } from "@clerk/nextjs";
+import { SignIn, SignedIn, useSignUp, useUser } from "@clerk/nextjs";
+import { User } from "@prisma/client";
+import { TRPCQueryOptions } from "@trpc/react-query/shared";
 import { type NextPage } from "next";
 import Head from "next/head";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import Feed from "~/components/Feed";
 import Menu from "~/components/Menu";
+import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const { user } = useUser();
+  const { isSignedIn, user } = useUser();
+
+  const { mutate } = api.user.create.useMutation({
+    onSuccess: (data) => {
+      toast.success("Welcome to Bee Social!");
+    },
+
+    onError: (e) => {
+      toast.success("Welcome back!");
+    },
+  });
+
+  useEffect(() => {
+    if (isSignedIn && user && user.username) {
+      mutate({
+        username: user.username,
+        profileImageUrl: user.profileImageUrl,
+        email: user.emailAddresses[0]?.emailAddress ?? "",
+        firstName: user.firstName ?? "",
+        lastName: user.lastName ?? "",
+      });
+    }
+  }, [isSignedIn, user]);
+
   return (
     <>
       <Head>
@@ -16,7 +44,6 @@ const Home: NextPage = () => {
 
       <main className="flex min-h-screen items-center justify-center">
         {!user && <SignIn />}
-
         {user && (
           <>
             <Menu
