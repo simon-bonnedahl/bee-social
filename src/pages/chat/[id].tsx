@@ -16,13 +16,13 @@ import { useRouter } from "next/router";
 import CreateChat from "~/components/CreateChat";
 import { Message } from "@prisma/client";
 
-const SinglePostPage: NextPage<{ chatId: number }> = ({ chatId }) => {
+const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
   const { user } = useUser();
 
   return (
     <>
       <Head>
-        <title>Messages - {chatId}</title>
+        <title>Messages - {id}</title>
       </Head>
       <main className="flex h-screen items-center justify-center overflow-hidden bg-gray-100 dark:bg-gray-700">
         {!user && <SignIn />}
@@ -35,7 +35,7 @@ const SinglePostPage: NextPage<{ chatId: number }> = ({ chatId }) => {
               highlight="chat"
             />
 
-            <Inbox chatId={chatId} />
+            <Inbox chatId={id === "inbox" ? null : parseInt(id)} />
           </>
         )}
       </main>
@@ -44,7 +44,7 @@ const SinglePostPage: NextPage<{ chatId: number }> = ({ chatId }) => {
 };
 
 type InboxProps = {
-  chatId: number;
+  chatId: number | null;
 };
 const Inbox = (props: InboxProps) => {
   const [selectedChat, setSelectedChat] = useState<number | null>(props.chatId);
@@ -52,12 +52,6 @@ const Inbox = (props: InboxProps) => {
   return (
     <div className="my-20 flex h-5/6 rounded-sm  border border-slate-300 bg-white dark:bg-gray-800  md:ml-24 md:w-10/12 lg:ml-64 lg:w-8/12">
       <div className="flex h-full w-4/12 flex-col border-r border-slate-300">
-        <div className="flex w-full items-center justify-between border-b border-slate-300 p-6">
-          <span className="text-lg font-semibold dark:text-white">
-            Messages
-          </span>
-          <CreateChat />
-        </div>
         <ChatList
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
@@ -101,7 +95,7 @@ const Chat = (props: ChatProps) => {
       chatId: props.chatId,
     });
   };
-  if (isLoadingChat || !chat)
+  if (isLoadingChat || !chat || !chat.participants)
     return (
       <div className="flex h-full w-8/12 items-center justify-center">
         <Spinner color="warning" size="xl" />
@@ -141,7 +135,7 @@ const Chat = (props: ChatProps) => {
           {chat?.messages?.map((message: Message) => {
             if (message.senderId === me?.id) {
               return (
-                <div className="flex w-full justify-end">
+                <div className="flex w-full justify-end" key={message.id}>
                   <div className="flex flex-col items-end gap-2">
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -158,7 +152,7 @@ const Chat = (props: ChatProps) => {
               );
             }
             return (
-              <div className="flex w-full justify-start gap-2">
+              <div className="flex w-full justify-start gap-2" key={message.id}>
                 <div className="flex flex-col items-start gap-2">
                   <div className="flex items-center gap-2">
                     <Image
@@ -244,7 +238,7 @@ const Chat = (props: ChatProps) => {
         {chat?.messages?.map((message: Message) => {
           if (message.senderId === me?.id) {
             return (
-              <div className="flex w-full justify-end">
+              <div className="flex w-full justify-end" key={message.id}>
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -264,7 +258,7 @@ const Chat = (props: ChatProps) => {
             (p) => p.id === message.senderId
           );
           return (
-            <div className="flex w-full justify-start gap-2">
+            <div className="flex w-full justify-start gap-2" key={message.id}>
               <div className="flex flex-col items-start gap-2">
                 <div className="flex items-center gap-2">
                   <Image
@@ -330,6 +324,10 @@ const ChatList = (props: ChatListProps) => {
   };
   return (
     <div className="flex h-full flex-col">
+      <div className="flex w-full items-center justify-between border-b border-slate-300 p-6">
+        <span className="text-lg font-semibold dark:text-white">Messages</span>
+        <CreateChat setSelectedChat={props.setSelectedChat} chats={data} />
+      </div>
       {[...data].map((chat) => {
         //filter out the current user from the participants
         chat.participants = chat.participants.filter(

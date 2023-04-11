@@ -124,18 +124,18 @@ const ProfileBio = (user: ProfileBioProps) => {
 };
 
 const ProfileFeed = (props: { userId: string }) => {
-  const { data, isLoading } = api.post.getPostsByUserId.useQuery({
+  const { data: posts, isLoading } = api.post.getPostsByUserId.useQuery({
     userId: props.userId,
   });
 
   if (isLoading) return <Spinner color="warning" />;
 
-  if (!data || data.length === 0) return <div>User has not posted</div>;
+  if (!posts || posts.length === 0) return <div>User has not posted</div>;
 
   return (
     <div className="grid w-fit grid-cols-3 gap-1 px-8 md:px-0">
-      {data.map(({ post, author }) => (
-        <PostSmall post={post} author={author} key={post.id} />
+      {posts.map((post) => (
+        <PostSmall {...post} key={post.id} />
       ))}
     </div>
   );

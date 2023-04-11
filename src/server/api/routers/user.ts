@@ -230,11 +230,23 @@ export const userRouter = createTRPCRouter({
       const followerId = ctx.userId;
       if (!followerId) return null;
 
-      const follow = true;
+      const followers = await ctx.prisma.user
+        .findUnique({
+          where: {
+            id: followingId,
+          },
+        })
+        .followers();
 
-      if (follow) return true;
-      return false;
+      if (!followers) return null;
+
+      const follow = followers.find(
+        (follower) => follower.followerId === followerId
+      );
+
+      return follow;
     }),
+
   getNotifications: privateProcedure.query(async ({ ctx }) => {
     const notifications = await ctx.prisma.notification.findMany({
       where: {

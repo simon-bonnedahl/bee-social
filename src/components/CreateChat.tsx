@@ -1,13 +1,21 @@
 import { Modal, Radio, Spinner } from "flowbite-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { IoCreateOutline } from "react-icons/io5";
 import { InputField } from "./Searcher";
-import { api } from "~/utils/api";
+import { RouterOutputs, api } from "~/utils/api";
 import Image from "next/image";
-import { User } from "@clerk/nextjs/dist/api";
 import { toast } from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
-function CreateChat() {
+import { User } from "@prisma/client";
+import { router } from "@trpc/server";
+import { useRouter } from "next/router";
+
+type CreateChatProps = {
+  setSelectedChat: (id: number) => void;
+  chats: RouterOutputs["chat"]["getChatList"];
+};
+
+function CreateChat(props: CreateChatProps) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [input, setInput] = React.useState("");
   const [chatName, setChatName] = React.useState("");
@@ -15,14 +23,21 @@ function CreateChat() {
 
   const [users, setUsers] = React.useState<User[]>([]);
 
+  const router = useRouter();
+
   const ctx = api.useContext();
 
-  const { mutate, isLoading: isCreatingChat } = api.chat.create.useMutation({
+  const {
+    mutate,
+    isLoading: isCreatingChat,
+    data: newChat,
+  } = api.chat.create.useMutation({
     onSuccess: () => {
       setIsOpen(false);
       setUsers([]);
       setChatName("");
       void ctx.chat.getChatList.invalidate();
+
       toast.success("Chat created");
     },
     onError: (e) => {
@@ -33,7 +48,44 @@ function CreateChat() {
   const { data, isLoading } = api.user.getBySearch.useQuery({
     search: input,
   });
+  const onCreateChat = () => {
+    if (chatName && users.length > 1)
+      //Group chat
+      mutate({
+        userIds: users.map((user) => user.id),
+        name: chatName,
+      });
+    if (users.length < 2) {
+      // Single chat
+      //Check for chat duplication
 
+      const chat = Object.values(props.chats).find((chat) =>
+        chat.participants.find(
+          (participant: { id: string }) => participant.id === users[0]?.id
+        )
+      );
+      if (chat) {
+        setIsOpen(false);
+        setUsers([]);
+        setChatName("");
+        props.setSelectedChat(chat.id);
+        router.push(`/chat/${chat.id}`).catch((e) => console.log(e));
+
+        return;
+      } else {
+        mutate({
+          userIds: users.map((user) => user.id),
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreatingChat && newChat) {
+      router.push(`/chat/${newChat.id}`).catch((e) => console.log(e));
+      props.setSelectedChat(newChat.id);
+    }
+  }, [isCreatingChat, newChat]);
   return (
     <React.Fragment>
       <button
@@ -101,6 +153,7 @@ function CreateChat() {
                       {user.username}
                     </div>
                   </div>
+
                   <Radio checked={users.includes(user)} />
                 </div>
               ))}
@@ -110,15 +163,7 @@ function CreateChat() {
             className="mt-4 flex items-center justify-between"
             onSubmit={(e) => {
               e.preventDefault();
-              if (chatName && users.length > 1)
-                mutate({
-                  userIds: users.map((user) => user.id),
-                  name: chatName,
-                });
-              if (users.length < 2)
-                mutate({
-                  userIds: users.map((user) => user.id),
-                });
+              onCreateChat();
             }}
           >
             {users.length > 1 && (

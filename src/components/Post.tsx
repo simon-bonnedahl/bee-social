@@ -13,13 +13,12 @@ import Link from "next/link";
 import { Dropdown } from "flowbite-react";
 dayjs.extend(relativeTime);
 
-type PostProps = RouterOutputs["post"]["getAll"][number];
+type PostProps = RouterOutputs["post"]["getById"];
 
-function Post(props: PostProps) {
-  const { post, author } = props;
-
+function Post(post: PostProps) {
   const ctx = api.useContext();
   const { user } = useUser();
+  if (!post) return <Spinner color="warning" />;
 
   const { mutate: like, isLoading: isLiking } = api.post.like.useMutation({
     onSuccess: () => {
@@ -46,7 +45,7 @@ function Post(props: PostProps) {
   );
 
   const onLike = () => {
-    if (!isLiking) like({ postId: post.id, authorId: author.id });
+    if (!isLiking) like({ postId: post.id, authorId: post.author.id });
   };
 
   const onRemove = () => {
@@ -57,9 +56,12 @@ function Post(props: PostProps) {
     <div className=" bg-white p-8 dark:bg-gray-800">
       <div className="flex justify-between ">
         <div className="flex items-center gap-x-4">
-          <Link className="hover:cursor-pointer" href={"/" + author.username}>
+          <Link
+            className="hover:cursor-pointer"
+            href={"/" + post.author.username}
+          >
             <Image
-              src={author.profileImageUrl}
+              src={post.author.profileImageUrl}
               alt="Profile Picture"
               className="h-12 w-12 rounded-full"
               width={40}
@@ -70,9 +72,9 @@ function Post(props: PostProps) {
             <span className="text-sm font-semibold dark:text-white">
               <Link
                 className="hover:cursor-pointer"
-                href={"/" + author.username}
+                href={"/" + post.author.username}
               >
-                {author.username}
+                {post.author.username}
               </Link>
               <span className="text-xs text-gray-500 dark:text-gray-300">
                 {" · "}
@@ -86,10 +88,10 @@ function Post(props: PostProps) {
           color={"transparent"}
           arrowIcon={false}
         >
-          {user?.id === author.id && (
+          {user?.id === post.author.id && (
             <Dropdown.Item onClick={onRemove}>Remove</Dropdown.Item>
           )}
-          {user?.id !== author.id && <Dropdown.Item>Report</Dropdown.Item>}
+          {user?.id !== post.author.id && <Dropdown.Item>Report</Dropdown.Item>}
         </Dropdown>
       </div>
       <div className="mt-4 w-96">
@@ -219,8 +221,9 @@ function CommentSection(props: CommentSectionProps) {
   );
 }
 
-export function PostSmall(props: PostProps) {
-  const { post, author } = props;
+type PostSmallProps = RouterOutputs["post"]["getPostsByUserId"][number];
+
+export function PostSmall(post: PostSmallProps) {
   return (
     <Link href={`/post/${post.id}`} className="group">
       {post.imageUrl && (

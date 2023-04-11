@@ -8,7 +8,7 @@ export const chatRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       input.userIds.push(ctx.userId);
-      const message = await ctx.prisma.chat.create({
+      const chat = await ctx.prisma.chat.create({
         data: {
           name: input.name || null,
           isGroupChat: input.userIds.length > 2,
@@ -17,7 +17,7 @@ export const chatRouter = createTRPCRouter({
           },
         },
       });
-      return message;
+      return chat;
     }),
 
   getChatList: privateProcedure.query(async ({ ctx }) => {

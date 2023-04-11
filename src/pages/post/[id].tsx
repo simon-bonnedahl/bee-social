@@ -6,19 +6,20 @@ import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 import Post from "~/components/Post";
 import Menu from "~/components/Menu";
 import { SignIn, useUser } from "@clerk/nextjs";
+import { Spinner } from "flowbite-react";
 
-const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
-  const { data } = api.post.getById.useQuery({
-    id: parseInt(id),
+const SinglePostPage: NextPage<{ id: number }> = ({ id }) => {
+  const { data: post, isLoading } = api.post.getById.useQuery({
+    id,
   });
   const { user } = useUser();
-
-  if (!data) return <div>404</div>;
+  if (isLoading) return <Spinner color="warning" />;
+  if (!post) return <div>404</div>;
 
   return (
     <>
       <Head>
-        <title>{`${data.post.content} - ${data.author.username}`}</title>
+        <title>{`${post.content} - ${post.author?.username}`}</title>
       </Head>
       {!user && <SignIn />}
       <main className="flex min-h-screen items-center justify-center">
@@ -31,7 +32,7 @@ const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
           </>
         )}
 
-        <Post post={data.post} author={data.author} />
+        <Post {...post} />
       </main>
     </>
   );

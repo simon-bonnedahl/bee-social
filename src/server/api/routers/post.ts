@@ -123,11 +123,17 @@ export const postRouter = createTRPCRouter({
       include: {
         likes: true,
         comments: true,
+        author: true,
       },
     });
-    const res = await addUserDataToPosts(posts);
 
-    return res;
+    return posts.map((post) => ({
+      ...post,
+      imageUrl:
+        `https://beesocialstorage.blob.core.windows.net/images/${
+          post.imageId ?? ""
+        }.png?${sasToken}` ?? "(image not found)",
+    }));
   }),
 
   getById: publicProcedure
@@ -140,33 +146,50 @@ export const postRouter = createTRPCRouter({
         include: {
           likes: true,
           comments: true,
+          author: true,
         },
       });
-      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
-      return (await addUserDataToPosts([post]))[0];
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Post not found: ${input.id}`,
+        });
+      }
+
+      return {
+        ...post,
+        imageUrl:
+          `https://beesocialstorage.blob.core.windows.net/images/${
+            post?.imageId ?? ""
+          }.png?${sasToken}` ?? "(image not found)",
+      };
     }),
 
   getPostsByUserId: publicProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-      })
-    )
-    .query(({ ctx, input }) =>
-      ctx.prisma.post
-        .findMany({
-          where: {
-            authorId: input.userId,
-          },
-          take: 100,
-          orderBy: [{ createdAt: "desc" }],
-          include: {
-            likes: true,
-            comments: true,
-          },
-        })
-        .then(addUserDataToPosts)
-    ),
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const posts = await ctx.prisma.post.findMany({
+        where: {
+          authorId: input.userId,
+        },
+        take: 100,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          likes: true,
+          comments: true,
+        },
+      });
+
+      return posts.map((post) => ({
+        ...post,
+        imageUrl:
+          `https://beesocialstorage.blob.core.windows.net/images/${
+            post.imageId ?? ""
+          }.png?${sasToken}` ?? "(image not found)",
+      }));
+    }),
 
   create: privateProcedure
     .input(
