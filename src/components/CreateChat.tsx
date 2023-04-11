@@ -61,7 +61,8 @@ function CreateChat(props: CreateChatProps) {
 
       const chat = Object.values(props.chats).find((chat) =>
         chat.participants.find(
-          (participant: { id: string }) => participant.id === users[0]?.id
+          (participant: { id: string }) =>
+            participant.id === users[0]?.id && chat.isGroupChat === false
         )
       );
       if (chat) {

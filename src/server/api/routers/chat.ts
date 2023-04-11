@@ -39,9 +39,40 @@ export const chatRouter = createTRPCRouter({
             },
           },
         },
+        messages: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            readBy: true,
+          },
+          take: 1,
+        },
       },
     });
-    return chats;
+
+    //fetch the last message for each chat check if its read by the user and then sort the chats by the last message date
+    const sortedChats = chats
+
+      .map((chat) => {
+        const lastMessage = chat.messages[0];
+        const isRead = lastMessage?.readBy.some((user) => user.id === userId);
+        return {
+          ...chat,
+          lastMessage,
+          isRead,
+        };
+      })
+      .sort((a, b) => {
+        if (a.lastMessage && b.lastMessage) {
+          return (
+            b.lastMessage.createdAt.getTime() -
+            a.lastMessage.createdAt.getTime()
+          );
+        }
+        return 0;
+      });
+    return sortedChats;
   }),
   sendMessage: privateProcedure
     .input(
@@ -56,6 +87,11 @@ export const chatRouter = createTRPCRouter({
           content: input.text,
           senderId: ctx.userId,
           chatId: input.chatId,
+          readBy: {
+            connect: {
+              id: ctx.userId,
+            },
+          },
         },
       });
       return message;
@@ -96,6 +132,33 @@ export const chatRouter = createTRPCRouter({
           },
         },
       });
+
+      const messages = await ctx.prisma.message.findMany({
+        where: {
+          chatId: input.chatId,
+        },
+        include: {
+          readBy: true,
+        },
+      });
+
+      messages.forEach(async (message) => {
+        if (!message.readBy.some((user) => user.id === ctx.userId)) {
+          await ctx.prisma.message.update({
+            where: {
+              id: message.id,
+            },
+            data: {
+              readBy: {
+                connect: {
+                  id: ctx.userId,
+                },
+              },
+            },
+          });
+        }
+      });
+
       return chat;
     }),
 });

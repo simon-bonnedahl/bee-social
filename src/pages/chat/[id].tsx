@@ -7,7 +7,7 @@ import { generateSSGHelper } from "~/server/helpers/generateSSGHelper";
 import Menu from "~/components/Menu";
 import { SignIn, useUser } from "@clerk/nextjs";
 import { IoCreateOutline } from "react-icons/io5";
-import { Spinner } from "flowbite-react";
+import { Badge, Spinner } from "flowbite-react";
 import { AiOutlinePhone, AiOutlineVideoCamera } from "react-icons/ai";
 import Image from "next/image";
 import { useState } from "react";
@@ -70,9 +70,16 @@ const Chat = (props: ChatProps) => {
   const { user: me } = useUser();
 
   const { data: chat, isLoading: isLoadingChat } =
-    api.chat.getFullChat.useQuery({
-      chatId: props.chatId,
-    });
+    api.chat.getFullChat.useQuery(
+      {
+        chatId: props.chatId,
+      },
+      {
+        onSuccess: () => {
+          void ctx.chat.getChatList.invalidate();
+        },
+      }
+    );
 
   const [input, setInput] = useState<string>("");
 
@@ -349,6 +356,10 @@ const ChatList = (props: ChatListProps) => {
             >
               {/*Stack profile pictures */}
               <div className="relative h-full w-20">
+                {!chat.isRead && (
+                  <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white"></span>
+                )}
+
                 <Image
                   src={chat.participants[0]?.profileImageUrl ?? ""}
                   alt="Profile picture"
@@ -391,7 +402,10 @@ const ChatList = (props: ChatListProps) => {
             key={chat.id}
             disabled={chat.id === props.selectedChat}
           >
-            <div className="h-full w-20">
+            <div className="relative h-full w-20">
+              {!chat.isRead && (
+                <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white"></span>
+              )}
               <Image
                 src={otherParticipant.profileImageUrl}
                 alt="Profile picture"

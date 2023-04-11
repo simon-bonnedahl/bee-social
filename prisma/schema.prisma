@@ -30,6 +30,7 @@ model User {
 
     chats        Chat[]    @relation("ChatParticipants")
     sentMessages Message[] @relation("ChatSender")
+    readBy       Message[] @relation("MessageReadBy")
 }
 
 model Post {
@@ -86,7 +87,8 @@ model Message {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     content   String
-    read      Boolean  @default(false)
+
+    readBy User[] @relation("MessageReadBy")
 
     sender   User   @relation("ChatSender", fields: [senderId], references: [id])
     senderId String
