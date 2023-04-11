@@ -16,6 +16,7 @@ import Logo from "./Logo";
 import Notifications from "./Notifications";
 import Searcher from "./Searcher";
 import ThemeSwitch from "./ThemeSwitch";
+import { api } from "~/utils/api";
 
 type MenuProps = {
   profileImageUrl: string;
@@ -49,6 +50,8 @@ function Menu(props: MenuProps) {
 }
 
 function SideMenu(props: MenuProps) {
+  const { data: unreadMessages, isLoading } =
+    api.chat.getNumberOfUnreadChats.useQuery();
   return (
     <div className="fixed top-0 left-0 h-full">
       <Sidebar
@@ -79,11 +82,18 @@ function SideMenu(props: MenuProps) {
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"
             >
               <div className="mt-2 flex items-center gap-5  ">
-                {props.highlight === "messages" ? (
-                  <IoPaperPlane className="h-8 w-8" />
-                ) : (
-                  <IoPaperPlaneOutline className="h-8 w-8" />
-                )}
+                <div className="relative">
+                  {props.highlight === "chat" ? (
+                    <IoPaperPlane className="h-8 w-8" />
+                  ) : (
+                    <IoPaperPlaneOutline className="h-8 w-8" />
+                  )}
+                  {unreadMessages > 0 && (
+                    <div className="absolute -top-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-orange-400 text-xs font-bold text-white dark:border-gray-900">
+                      {unreadMessages}
+                    </div>
+                  )}
+                </div>
                 Messages
               </div>
             </Sidebar.Item>

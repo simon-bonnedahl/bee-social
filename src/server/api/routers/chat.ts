@@ -161,4 +161,30 @@ export const chatRouter = createTRPCRouter({
 
       return chat;
     }),
+  getNumberOfUnreadChats: privateProcedure.query(async ({ ctx }) => {
+    const userId = ctx.userId;
+    const chats = await ctx.prisma.chat.findMany({
+      where: {
+        participants: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        messages: {
+          include: {
+            readBy: true,
+          },
+        },
+      },
+    });
+    const numberOfUnreadChats = chats.reduce((acc, chat) => {
+      const unreadMessages = chat.messages.filter(
+        (message) => !message.readBy.some((user) => user.id === userId)
+      );
+      return acc + unreadMessages.length;
+    }, 0);
+    return numberOfUnreadChats;
+  }),
 });

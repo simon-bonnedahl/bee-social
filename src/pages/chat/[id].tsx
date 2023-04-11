@@ -77,6 +77,7 @@ const Chat = (props: ChatProps) => {
       {
         onSuccess: () => {
           void ctx.chat.getChatList.invalidate();
+          void ctx.chat.getNumberOfUnreadChats.invalidate();
         },
       }
     );
@@ -322,28 +323,81 @@ const ChatList = (props: ChatListProps) => {
 
   const { user } = useUser();
 
-  if (isLoading) return <Spinner color="warning" />;
-  if (!data) return <div>404</div>;
-
   const onSelect = (id: number) => {
     props.setSelectedChat(id);
     router.push(`/chat/${id}`).catch((e) => console.log(e));
   };
-  return (
-    <div className="flex h-full flex-col">
-      <div className="flex w-full items-center justify-between border-b border-slate-300 p-6">
-        <span className="text-lg font-semibold dark:text-white">Messages</span>
-        <CreateChat setSelectedChat={props.setSelectedChat} chats={data} />
-      </div>
-      {[...data].map((chat) => {
-        //filter out the current user from the participants
-        chat.participants = chat.participants.filter(
-          (p) => p.username !== user?.username
-        );
 
-        if (chat.participants.length > 1)
-          //Groupchat
+  const Header = () => (
+    <div className="flex w-full items-center justify-between border-b border-slate-300 p-6">
+      <span className="text-lg font-semibold dark:text-white">Messages</span>
+      {data && (
+        <CreateChat setSelectedChat={props.setSelectedChat} chats={data} />
+      )}
+    </div>
+  );
+
+  const List = () => {
+    if (!data) return <div>404</div>;
+    return (
+      <div>
+        {[...data].map((chat) => {
+          //filter out the current user from the participants
+          chat.participants = chat.participants.filter(
+            (p) => p.username !== user?.username
+          );
+
+          if (chat.participants.length > 1)
+            //Groupchat
+            return (
+              <button
+                className={`flex w-full gap-2 p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
+                  props.selectedChat === chat.id
+                    ? "bg-gray-300 dark:bg-gray-600"
+                    : "bg-white dark:bg-gray-800"
+                }`}
+                onClick={() => onSelect(chat.id)}
+                key={chat.id}
+                disabled={chat.id === props.selectedChat}
+              >
+                {/*Stack profile pictures */}
+                <div className="relative h-full w-20">
+                  {!chat.isRead && (
+                    <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white"></span>
+                  )}
+
+                  <Image
+                    src={chat.participants[0]?.profileImageUrl ?? ""}
+                    alt="Profile picture"
+                    className="absolute top-0 left-0 rounded-full"
+                    width={40}
+                    height={40}
+                  />
+                  <Image
+                    src={chat.participants[1]?.profileImageUrl ?? ""}
+                    alt="Profile picture"
+                    className="absolute top-2 left-2 rounded-full"
+                    width={40}
+                    height={40}
+                  />
+                </div>
+
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold dark:text-white">
+                    {chat.name ?? "Groupchat"}
+                  </span>
+                  <span className=" text-sm dark:text-white">
+                    {chat.participants.map((p) => p.username).join(", ")}
+                  </span>
+                </div>
+              </button>
+            );
+
+          const otherParticipant = chat.participants[0];
+          if (!otherParticipant) return null;
+
           return (
+            //Single chat, get the other participants info
             <button
               className={`flex w-full gap-2 p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
                 props.selectedChat === chat.id
@@ -354,77 +408,43 @@ const ChatList = (props: ChatListProps) => {
               key={chat.id}
               disabled={chat.id === props.selectedChat}
             >
-              {/*Stack profile pictures */}
               <div className="relative h-full w-20">
                 {!chat.isRead && (
                   <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white"></span>
                 )}
-
                 <Image
-                  src={chat.participants[0]?.profileImageUrl ?? ""}
+                  src={otherParticipant.profileImageUrl}
                   alt="Profile picture"
-                  className="absolute top-0 left-0 rounded-full"
-                  width={40}
-                  height={40}
-                />
-                <Image
-                  src={chat.participants[1]?.profileImageUrl ?? ""}
-                  alt="Profile picture"
-                  className="absolute top-2 left-2 rounded-full"
-                  width={40}
-                  height={40}
+                  className="rounded-full"
+                  width={50}
+                  height={50}
                 />
               </div>
-
               <div className="flex flex-col items-start">
                 <span className="font-semibold dark:text-white">
-                  {chat.name ?? "Groupchat"}
+                  {`${otherParticipant.firstName} ${otherParticipant.lastName}`}
                 </span>
                 <span className=" text-sm dark:text-white">
-                  {chat.participants.map((p) => p.username).join(", ")}
+                  {otherParticipant.username}
                 </span>
               </div>
             </button>
           );
+        })}
+      </div>
+    );
+  };
 
-        const otherParticipant = chat.participants[0];
-        if (!otherParticipant) return null;
-
-        return (
-          //Single chat, get the other participants info
-          <button
-            className={`flex w-full gap-2 p-3 px-5 duration-300 ease-in-out hover:cursor-pointer hover:bg-gray-300 ${
-              props.selectedChat === chat.id
-                ? "bg-gray-300 dark:bg-gray-600"
-                : "bg-white dark:bg-gray-800"
-            }`}
-            onClick={() => onSelect(chat.id)}
-            key={chat.id}
-            disabled={chat.id === props.selectedChat}
-          >
-            <div className="relative h-full w-20">
-              {!chat.isRead && (
-                <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white"></span>
-              )}
-              <Image
-                src={otherParticipant.profileImageUrl}
-                alt="Profile picture"
-                className="rounded-full"
-                width={50}
-                height={50}
-              />
-            </div>
-            <div className="flex flex-col items-start">
-              <span className="font-semibold dark:text-white">
-                {`${otherParticipant.firstName} ${otherParticipant.lastName}`}
-              </span>
-              <span className=" text-sm dark:text-white">
-                {otherParticipant.username}
-              </span>
-            </div>
-          </button>
-        );
-      })}
+  return (
+    <div className="flex h-full flex-col">
+      <Header />
+      {isLoading ? (
+        <div className="flex h-full w-full items-center justify-center">
+          <Spinner color="warning" size="xl" />
+        </div>
+      ) : (
+        <List />
+      )}
     </div>
   );
 };
