@@ -17,6 +17,7 @@ import Notifications from "./Notifications";
 import Searcher from "./Searcher";
 import ThemeSwitch from "./ThemeSwitch";
 import { api } from "~/utils/api";
+import CreatePostv2 from "./CreatePostv2";
 
 type MenuProps = {
   profileImageUrl: string;
@@ -99,7 +100,7 @@ function SideMenu(props: MenuProps) {
             </Sidebar.Item>
             <Notifications width="full" />
 
-            <CreatePost width="full" />
+            <CreatePostv2 />
             <Sidebar.Item
               href={"/" + props.username}
               className="text-lg duration-200 ease-in-out hover:scale-110 hover:cursor-pointer hover:text-sm hover:font-semibold"

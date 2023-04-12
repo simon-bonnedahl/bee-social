@@ -13,6 +13,7 @@
     "@alfiejones/flowbite-react": "^0.4.2",
     "@azure/storage-blob": "^12.13.0",
     "@clerk/nextjs": "^4.11.13",
+    "@headlessui/react": "^1.7.13",
     "@opentelemetry/api": "^1.4.1",
     "@prisma/client": "^4.11.0",
     "@tanstack/react-query": "^4.28.0",

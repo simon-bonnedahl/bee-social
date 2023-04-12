@@ -79,40 +79,50 @@ function CreatePost(props: CreatePostProps) {
           {props.width && props.width === "full" && "Post"}
         </div>
       </Sidebar.Item>
-      <Modal show={visible} onClose={() => setVisible(false)} size={size}>
-        <Modal.Header>Create new post</Modal.Header>
+      <Modal
+        show={visible}
+        onClose={() => setVisible(false)}
+        size={size}
+        dismissible
+      >
         <Modal.Body>
-          {page === 1 && (
-            <DragAndDropImage
-              preview={preview}
-              setPreview={setPreview}
-              setImageFile={setImageFile}
-            />
-          )}
-          {page === 2 && (
-            <div className="flex gap-4">
-              {preview && (
-                <Image src={preview} alt="preview" width={450} height={450} />
-              )}
+          {/* Header*/}
+          <div className="flex h-12 w-full items-center justify-center border-b border-gray-300">
+            <h1 className="text-md font-semibold">Create Post</h1>
+          </div>
+          <div className="flex h-96 items-center justify-center">
+            {page === 1 && (
+              <DragAndDropImage
+                preview={preview}
+                setPreview={setPreview}
+                setImageFile={setImageFile}
+              />
+            )}
+            {page === 2 && (
+              <div className="flex gap-4">
+                {preview && (
+                  <Image src={preview} alt="preview" width={450} height={450} />
+                )}
 
-              <WriteContent content={content} setContent={setContent} />
-            </div>
-          )}
+                <WriteContent content={content} setContent={setContent} />
+              </div>
+            )}
+          </div>
         </Modal.Body>
         <Modal.Footer className="flex justify-between">
-          <Pagination
-            currentPage={page}
-            layout="navigation"
-            totalPages={2}
-            onPageChange={(page) => onPageChange(page)}
-          />
           {page === 2 && (
             <Button
               className=" bg-orange-400 hover:bg-orange-500 dark:bg-orange-400 dark:hover:bg-orange-500"
               onClick={onPost}
               disabled={!content || !imageFile}
             >
-              {isPosting ? <Spinner color="warning" /> : "Post"}
+              {isPosting ? (
+                <div>
+                  Posting <Spinner color="warning" size="sm" />
+                </div>
+              ) : (
+                "Post"
+              )}
             </Button>
           )}
         </Modal.Footer>
@@ -162,8 +172,8 @@ function DragAndDropImage(props: DragAndDropImageProps) {
           types={fileTypes}
           minSize={0.1}
         >
-          <div className="flex h-64 flex-col items-center justify-center gap-2">
-            <AiOutlinePlusCircle size={80} className="dark:text-white" />
+          <div className="flex h-64 flex-col items-center justify-center gap-2 text-gray-400 dark:text-white">
+            <AiOutlinePlusCircle size={60} />
             <span className="text-lg dark:text-white">
               Drag and drop or click to upload
             </span>
@@ -192,7 +202,7 @@ function WriteContent(props: WriteContentProps) {
         />
         <div className="flex flex-col">
           <span className="text-sm font-semibold dark:text-white">
-            @{user?.username}
+            {user?.username}
           </span>
         </div>
       </div>
