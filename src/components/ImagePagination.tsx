@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 type ImagePaginationProps = {
@@ -31,15 +32,22 @@ function ImagePagination(props: ImagePaginationProps) {
 
   return (
     <>
+      <Image
+        src={props.images[currentPage] ?? ""}
+        alt="image-upload"
+        width={600}
+        height={600}
+        className="z-60 left-0 top-0 h-full w-full "
+      />
       <div className="item-center absolute top-2/4 flex h-10 w-full justify-between px-4">
         <button onClick={previous}>
-          <AiOutlineLeft />
+          <AiOutlineLeft className="h-8 w-8 text-gray-700" />
         </button>
         <button onClick={next}>
-          <AiOutlineRight />
+          <AiOutlineRight className="h-8 w-8 text-gray-700" />
         </button>
       </div>
-      <div className="bg-balck absolute bottom-4 left-2/4 flex gap-1">
+      <div className="bg-balck absolute bottom-5 left-2/4 flex gap-1">
         {props.images.map((image, index) => (
           <Dot active={index === currentPage} key={index} />
         ))}

@@ -5,6 +5,7 @@ import { Fragment, useState } from "react";
 import { Sidebar } from "@alfiejones/flowbite-react";
 
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { IoImagesOutline } from "react-icons/io5";
 import { FileUploader } from "react-drag-drop-files";
 import Image from "next/image";
 import FileResizer from "react-image-file-resizer";
@@ -109,21 +110,16 @@ function DragAndDropImage(props: DragAndDropImageProps) {
     <>
       {props.images.length !== 0 && (
         <div className="relative h-full w-full">
-          <Image
-            src={props.images[0] ?? ""}
-            alt="preview"
-            width={600}
-            height={600}
-            className="z-60 left-0 top-0 h-full w-full "
-          />
-          <div className="absolute bottom-2 right-2">
+          <div className="absolute bottom-4 right-4">
             <FileUploader
               handleChange={handleChange}
               name="file"
               types={fileTypes}
               minSize={0.1}
             >
-              Add another
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black opacity-50 hover:cursor-pointer hover:opacity-30">
+                <IoImagesOutline className="h-4 w-4 text-white" />
+              </div>
             </FileUploader>
           </div>
           {props.images.length > 1 && <ImagePagination images={props.images} />}
