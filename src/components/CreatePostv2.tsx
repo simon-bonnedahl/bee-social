@@ -12,7 +12,7 @@ import FileResizer from "react-image-file-resizer";
 import ImagePagination from "./ImagePagination";
 
 export default function CreatePostv2() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<number>(1);
   const [images, setImages] = useState<string[]>([]);
 
